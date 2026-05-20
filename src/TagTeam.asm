@@ -73,6 +73,44 @@ scope TagTeam {
     db 0, 0, 0, 0
 
     // @ Description
+    // Per-port cooldown counter (in frames) for the manual L+Z tag swap.
+    // Prevents rapid spamming; set to 60 on swap, decremented each frame.
+    swap_cooldown:
+    db 0, 0, 0, 0
+
+    // @ Description
+    // Per-port hold counter for the manual L+Z tag swap. Increments each frame
+    // while both L and Z are held. Once it reaches HOLD_THRESHOLD, the swap
+    // triggers. Resets to 0 the moment either button is released, so a fresh
+    // hold is required for the next swap.
+    hold_counter:
+    db 0, 0, 0, 0
+
+    // @ Description
+    // Number of frames L+Z must be held simultaneously before a tag swap fires.
+    // 30 frames = ~0.5 seconds at 60Hz.
+    constant HOLD_THRESHOLD(30)
+
+    // @ Description
+    // Per-port, per-slot saved damage percentage for Tag Team manual swap.
+    // Indexed as [port][slot], 4 ports x 6 slots x 4 bytes = 96 bytes total.
+    // Reset at match start; saved when a character tags out, restored on tag-in.
+    OS.align(4)
+    saved_damage:
+    fill 4 * 6 * 4
+
+    // @ Description
+    // Per-port, per-slot saved character-specific state (B-special charges, ammo,
+    // etc.). Different characters store charge/ammo at different offsets within
+    // 0x0ADC..0x0AEC of the player struct (e.g. Samus 0x0AE0, Dedede 0x0AE4,
+    // DK 0x0AE8). We snapshot the full 16-byte range so any of them is covered.
+    // Rotated alongside character_queues so each char's charge follows them
+    // through the queue and is restored when they tag back in.
+    OS.align(4)
+    saved_charge:
+    fill 4 * 6 * 16             // 4 ports x 6 slots x 16 bytes
+
+    // @ Description
     // Caches stock icon texture and palette info so we don't have to load all chars or the stock icons file
     // Texture first (0x50), then palette (0x28), then image struct with pointer to texture (0x10)
     // Then, annoyingly, we have to get 5 palettes in order to handle toggling teams/ffa:
@@ -891,6 +929,39 @@ scope TagTeam {
         bne     at, t3, _preload_loop       // loop if not at end
         nop
 
+        // Reset per-port swap cooldowns at match start
+        li      t0, swap_cooldown
+        sw      r0, 0x0000(t0)              // clear all 4 cooldown bytes at once
+
+        // Reset per-port hold counters at match start
+        li      t0, hold_counter
+        sw      r0, 0x0000(t0)              // clear all 4 hold bytes at once
+
+        // Reset saved damage table (4 ports x 6 slots x 4 bytes = 96 bytes = 24 words)
+        li      t0, saved_damage
+        lli     t1, 0x0018                  // 24 iterations
+        _clear_damage_loop:
+        addiu   t1, t1, -0x0001
+        sw      r0, 0x0000(t0)
+        bnez    t1, _clear_damage_loop
+        addiu   t0, t0, 0x0004              // advance pointer (delay slot)
+
+        // Reset saved charge table (4 ports x 6 slots x 16 bytes = 384 bytes = 96 words)
+        li      t0, saved_charge
+        lli     t1, 0x0060                  // 96 iterations
+        _clear_charge_loop:
+        addiu   t1, t1, -0x0001
+        sw      r0, 0x0000(t0)
+        bnez    t1, _clear_charge_loop
+        addiu   t0, t0, 0x0004              // advance pointer (delay slot)
+
+        // Register check_swap_input_ as a per-frame GObj routine (once at match start)
+        addiu   a0, r0, 0x03FD              // unique ID for the swap input checker GObj
+        li      a1, check_swap_input_       // routine to run every frame
+        addiu   a2, r0, 0x000B              // linked list (logic-only, same as ComboMeter)
+        jal     0x80009968                  // GObj.proc.add - register GObj routine
+        lui     a3, 0x8000                  // delay slot
+
         _set_heap:
         lw      v1, 0x0018(sp)              // restore v1
         lbu     t4, 0x0022(v1)              // t4 = player type (0 - HMN, 1 - CPU, 2 - NA)
@@ -1428,6 +1499,500 @@ scope TagTeam {
 
         b       _redraw_icons               // redraw icons in case this was a random slot
         nop
+    }
+
+    // @ Description
+    // Per-frame GObj routine: checks L+Z pressed together to trigger a Marvel-vs-Capcom-style
+    // Tag Team character swap. Rotates the character queue without consuming a stock, and saves
+    // and restores accumulated damage percentages across tags.
+    // Registered once per match by use_character_queues_on_load_.
+    // @ Arguments
+    // a0 - checker GObj (not used)
+    scope check_swap_input_: {
+        addiu   sp, sp, -0x0040             // allocate stack frame
+        sw      ra, 0x0004(sp)              // save ra
+        sw      s0, 0x0008(sp)              // save caller s0
+        sw      s1, 0x000C(sp)              // save caller s1
+        sw      s2, 0x0010(sp)              // save caller s2
+
+        // Only run in Tag Team mode
+        OS.read_word(VsRemixMenu.vs_mode_flag, t0)
+        lli     t1, VsRemixMenu.mode.TAG_TEAM
+        bne     t0, t1, _end
+        nop
+
+        // Skip the entire swap check while the game is paused or otherwise not
+        // actively running. Without this, holding Z as part of the A+B+Z+R
+        // in-game reset combo (or just leaving L+Z held while the pause menu is
+        // up) would keep ticking the hold counter and fire a swap on unpause.
+        // game_status: 0=wait, 1=ongoing, 2=paused, 3=unpausing, 5=match end, 7=reset
+        OS.read_byte(Global.vs.game_status, t0)
+        lli     t1, 0x0001
+        bne     t0, t1, _reset_all_holds     // not running → wipe hold counters and bail
+        lli     s0, 0x0000                  // s0 = port = 0 (delay slot)
+
+        _port_loop:
+        // ── Step 1: Read L+Z held state (every frame, regardless of cooldown) ────
+        // Joypad struct: base 0x80045228, 10 bytes/port, +0x00 = held this frame.
+        // We use the HELD state (not the rising edge) so the swap fires reliably
+        // when both buttons settle, and tolerates a few frames of finger skew.
+        li      t0, 0x80045228
+        lli     t1, 0x000A                  // 10 bytes per port
+        multu   s0, t1
+        mflo    t1                          // t1 = port * 10
+        addu    t0, t0, t1                  // t0 = joypad entry for this port
+        lhu     t0, 0x0000(t0)              // t0 = held-this-frame buttons
+        // ── Exclude the in-game reset combo (A+B+Z+R, with or without Start) ────
+        // If any of A, B, or R is also held, this is not a tag-swap intent —
+        // it's the player setting up the soft-reset combo. We zero out the mask
+        // so the "both held" check fails and the hold counter resets.
+        lli     t1, 0xC010                  // A (0x8000) | B (0x4000) | R (0x0010)
+        and     t2, t0, t1
+        bnez    t2, _exclude_reset_combo    // any of A/B/R held → not a swap
+        nop
+        b       _have_buttons
+        nop
+        _exclude_reset_combo:
+        or      t0, r0, r0                  // clobber buttons to 0 so the L+Z check fails
+
+        _have_buttons:
+        lli     t1, 0x2020                  // L (0x0020) | Z (0x2000)
+        and     t9, t0, t1                  // t9 = masked buttons (preserved across cooldown step)
+        sw      t1, 0x002C(sp)              // stash expected mask in scratch slot
+
+        // ── Step 2: If L+Z not both held, reset hold counter NOW (even in cooldown).
+        // Without this, releasing during the post-swap cooldown leaves the counter
+        // pinned at HOLD_THRESHOLD; the next hold then starts at threshold and
+        // never fires (since we clamp to prevent refire-while-held).
+        bne     t9, t1, _do_reset_hold
+        nop
+        b       _cooldown_check
+        nop
+
+        _do_reset_hold:
+        li      t0, hold_counter
+        addu    t0, t0, s0
+        sb      r0, 0x0000(t0)              // counter = 0
+
+        _cooldown_check:
+        // ── Step 3: Cooldown decrement ───────────────────────────────────────────
+        li      t0, swap_cooldown
+        addu    t1, t0, s0                  // t1 = &swap_cooldown[port]
+        lbu     t2, 0x0000(t1)              // t2 = cooldown counter
+        beqz    t2, _check_held             // if 0, proceed to held check
+        nop
+        addiu   t2, t2, -0x0001             // decrement cooldown
+        b       _next_port
+        sb      t2, 0x0000(t1)              // store decremented value (delay slot)
+
+        _check_held:
+        // ── Step 4: Increment hold counter while held; fire at threshold ─────────
+        lw      t1, 0x002C(sp)              // t1 = expected L|Z mask (reload — bcopy in step 7.5 clobbers temps)
+        bne     t9, t1, _next_port          // not both held → nothing to count this frame
+        nop
+
+        li      t0, hold_counter
+        addu    t0, t0, s0                  // t0 = &hold_counter[port]
+        lbu     t1, 0x0000(t0)              // t1 = current hold counter
+        lli     t2, HOLD_THRESHOLD
+        sltu    t3, t1, t2                  // t3 = 1 if counter < threshold
+        beqz    t3, _next_port              // already fired this hold — wait for release
+        nop
+        addiu   t1, t1, 0x0001              // counter++
+        sb      t1, 0x0000(t0)              // store new counter
+        bne     t1, t2, _next_port          // not yet at threshold → keep waiting
+        nop
+        b       _find_player                // threshold reached → trigger swap
+        nop
+
+        _find_player:
+        // ── Step 3: Find player GObj for this port ────────────────────────────────
+        li      t0, 0x800466FC
+        lw      s1, 0x0000(t0)              // s1 = first player GObj
+
+        _gobj_loop:
+        beqz    s1, _try_match_struct       // end of list; fall back to match struct
+        nop
+        lw      t0, 0x0084(s1)              // t0 = player struct
+        beqz    t0, _gobj_next              // skip GObjs without a player struct
+        nop
+        lbu     t1, 0x000D(t0)              // t1 = port_id
+        beq     t1, s0, _found_player       // matched
+        nop
+        _gobj_next:
+        b       _gobj_loop
+        lw      s1, 0x0004(s1)              // s1 = next GObj (delay slot)
+
+        _try_match_struct:
+        // Fallback: look up player object via the match player struct table.
+        // This handles cases where the GObj linked list doesn't expose port 4 reliably.
+        li      t0, Global.vs.p1
+        lli     t1, Global.vs.P_DIFF        // size of per-port struct
+        multu   s0, t1
+        mflo    t1
+        addu    t0, t0, t1                  // t0 = match player struct for this port
+        lw      s1, 0x0058(t0)              // s1 = player object (gobj)
+        beqz    s1, _next_port              // no player object → nothing to swap
+        nop
+        lw      t0, 0x0084(s1)              // t0 = player struct
+        beqz    t0, _next_port              // sanity
+        nop
+        // fall through with s1 = player gobj, t0 = player struct
+
+        _found_player:
+        // s1 = player GObj, t0 = player struct
+        or      s2, t0, r0                  // s2 = player struct
+
+        // ── Step 4: Guard — need >= 2 stocks remaining to have a reserve ──────────
+        lbu     t2, 0x0014(s2)              // t2 = stocks_remaining
+        sltiu   t3, t2, 0x0002             // t3 = 1 if stocks_remaining < 2
+        bnez    t3, _next_port              // skip if 0 or 1 stock left (no reserve)
+        nop
+
+        // ── Step 5: queue_index = stocks_setting - stocks_remaining ───────────────
+        li      t0, StockMode.initial_stock_count_table
+        addu    t0, t0, s0
+        lbu     t0, 0x0000(t0)              // t0 = stocks_setting (N)
+        subu    t3, t0, t2                  // t3 = queue_index (t2 = stocks_remaining)
+
+        // ── Step 6: Save outgoing char's damage to saved_damage[port][queue_index] ─
+        lw      t4, 0x002C(s2)              // t4 = current damage percent (raw integer)
+        li      t0, saved_damage
+        lli     t5, 0x0018                  // 6 slots * 4 bytes = 24 bytes per port
+        multu   s0, t5
+        mflo    t5                          // t5 = port * 24
+        sll     t6, t3, 0x0002              // t6 = queue_index * 4
+        addu    t0, t0, t5
+        addu    t0, t0, t6                  // t0 = &saved_damage[port][queue_index]
+        sw      t4, 0x0000(t0)              // save outgoing char's damage
+
+        // ── Step 6.5: Save outgoing char's B-special charge state ─────────────────
+        // Copy 16 bytes from player_struct+0x0ADC to saved_charge[port][queue_index].
+        // Different characters store charge/ammo at different offsets within this
+        // range; we capture the whole block so it round-trips per character.
+        li      t0, saved_charge
+        lli     t5, 0x0060                  // 6 slots * 16 bytes = 96 bytes per port
+        multu   s0, t5
+        mflo    t5                          // t5 = port * 96
+        sll     t6, t3, 0x0004              // t6 = queue_index * 16
+        addu    t0, t0, t5
+        addu    t0, t0, t6                  // t0 = &saved_charge[port][queue_index]
+        lw      t4, 0x0ADC(s2)
+        sw      t4, 0x0000(t0)
+        lw      t4, 0x0AE0(s2)
+        sw      t4, 0x0004(t0)
+        lw      t4, 0x0AE4(s2)
+        sw      t4, 0x0008(t0)
+        lw      t4, 0x0AE8(s2)
+        sw      t4, 0x000C(t0)
+
+        // ── Step 7: Rotate character_queues[port][queue_index..+stocks_remaining-1] left ─
+        // Start address: &character_queues[port] + queue_index*4
+        li      t0, character_queues
+        sll     t1, s0, 0x0003              // port * 8
+        sll     t4, s0, 0x0004              // port * 16
+        addu    t1, t1, t4                  // port * 24 (= port * 0x18)
+        addu    t0, t0, t1                  // &character_queues[port]
+        sll     t1, t3, 0x0002              // queue_index * 4
+        addu    t0, t0, t1                  // &character_queues[port][queue_index]
+        lw      t1, 0x0000(t0)              // save outgoing slot (goes to back)
+        // NOTE: 0x0014(player_struct) holds "reserves" (= stocks left to lose,
+        // excluding the currently alive char). With 4 chars selected we get 3
+        // here, so to rotate all 4 live slots we need stocks_remaining shifts,
+        // not stocks_remaining-1. The original "-1" off-by-one made the last
+        // queued char (e.g. Bowser at slot 3) untouchable.
+        or      t4, t2, r0                  // t4 = loop count (stocks_remaining = #live chars - 1)
+        or      t5, t0, r0                  // t5 = write pointer
+
+        _rotate_char_loop:
+        lw      t6, 0x0004(t5)              // read next slot
+        sw      t6, 0x0000(t5)              // shift it one position left
+        addiu   t4, t4, -0x0001
+        bnez    t4, _rotate_char_loop
+        addiu   t5, t5, 0x0004             // advance write ptr (delay slot)
+        sw      t1, 0x0000(t5)              // place outgoing char at back of live queue
+
+        // ── Step 7.5: Rotate icon_cache[port][queue_index..stocks-1] left ────────
+        // The HUD's stock-icon strip reads from icon_cache by index. Without this
+        // rotation, the icons stay tied to the original slot positions, so after
+        // a tag swap the wrong characters appear (and the outgoing char's icon
+        // never shows up at the end of the queue).
+        //
+        // Strategy: rotate word-by-word so we don't need a scratch buffer.
+        // For each word offset within ICON_CACHE_SLOT_SIZE, save the outgoing
+        // slot's word, shift the rest left, then drop the saved word at the back.
+        // Afterward, fix up each affected slot's image_chunk.tex_ptr — those
+        // pointers reference the slot's own texture base, so they must point at
+        // the slot they now sit in, not the slot the data came from.
+        li      t8, icon_cache
+        lli     t4, ICON_CACHE_PORT_SIZE
+        multu   s0, t4
+        mflo    t4
+        addu    t8, t8, t4                  // t8 = &icon_cache[port][0]
+        lli     t4, ICON_CACHE_SLOT_SIZE
+        multu   t3, t4
+        mflo    t4
+        addu    t8, t8, t4                  // t8 = &icon_cache[port][queue_index]
+
+        lli     t7, 0x0000                  // t7 = word offset within slot
+
+        _rotate_icon_outer:
+        addu    t6, t8, t7                  // t6 = &slot[queue_index] + word_offset
+        lw      t9, 0x0000(t6)              // t9 = saved word from outgoing slot
+        or      t4, t2, r0                  // t4 = inner loop count (= stocks_remaining; matches Step 7's count to cover all live slots)
+        or      t5, t6, r0                  // t5 = write ptr
+
+        _rotate_icon_inner:
+        lw      a0, ICON_CACHE_SLOT_SIZE(t5) // a0 = next slot's word at this offset
+        sw      a0, 0x0000(t5)              // shift it one position left
+        addiu   t4, t4, -0x0001
+        bnez    t4, _rotate_icon_inner
+        addiu   t5, t5, ICON_CACHE_SLOT_SIZE // advance write ptr (delay slot)
+        sw      t9, 0x0000(t5)              // place saved word at back of live queue
+
+        addiu   t7, t7, 0x0004              // word_offset += 4
+        lli     t6, ICON_CACHE_SLOT_SIZE
+        bne     t7, t6, _rotate_icon_outer
+        nop
+
+        // Fix up self-referential tex_ptrs for the rotated slots so each one
+        // points to its own texture base instead of the slot it copied from.
+        // We rotated stocks_remaining+1 slots in total (the live char count), so
+        // fix that many tex_ptrs.
+        or      t5, t8, r0                  // t5 = &slot[queue_index]
+        addiu   t4, t2, 0x0001              // t4 = stocks_remaining + 1 (= live char count)
+
+        _fixup_tex_ptr_loop:
+        sw      t5, 0x00B0(t5)              // slot.image_chunk.tex_ptr = slot addr (ICON_IMAGE_CHUNK_OFFSET + 0x08)
+        addiu   t4, t4, -0x0001
+        bnez    t4, _fixup_tex_ptr_loop
+        addiu   t5, t5, ICON_CACHE_SLOT_SIZE // advance to next slot (delay slot)
+
+        // ── Step 8: Rotate saved_damage[port][queue_index..+stocks_remaining-1] left ─
+        li      t0, saved_damage
+        lli     t4, 0x0018
+        multu   s0, t4
+        mflo    t4                          // port * 24
+        sll     t5, t3, 0x0002              // queue_index * 4
+        addu    t0, t0, t4
+        addu    t0, t0, t5                  // &saved_damage[port][queue_index]
+        lw      t1, 0x0000(t0)              // outgoing char's damage (saved in step 6)
+        or      t4, t2, r0                  // loop count = stocks_remaining (matches Step 7's count to keep damage aligned with chars)
+        or      t5, t0, r0
+
+        _rotate_dmg_loop:
+        lw      t6, 0x0004(t5)
+        sw      t6, 0x0000(t5)
+        addiu   t4, t4, -0x0001
+        bnez    t4, _rotate_dmg_loop
+        addiu   t5, t5, 0x0004
+
+        sw      t1, 0x0000(t5)              // outgoing char's damage → back slot
+
+        // ── Step 8.5: Rotate saved_charge[port][queue_index..stocks-1] left ──────
+        // Each slot is 16 bytes (4 words). Same word-by-word rotation pattern as
+        // the icon cache but without a tex_ptr fixup (no self-referential pointers).
+        li      t0, saved_charge
+        lli     t4, 0x0060                  // 6 slots * 16 bytes = 96 bytes per port
+        multu   s0, t4
+        mflo    t4
+        addu    t0, t0, t4                  // t0 = &saved_charge[port][0]
+        sll     t4, t3, 0x0004              // queue_index * 16
+        addu    t0, t0, t4                  // t0 = &saved_charge[port][queue_index]
+
+        lli     t7, 0x0000                  // t7 = word offset within slot (0..15)
+
+        _rotate_charge_outer:
+        addu    t6, t0, t7                  // t6 = &slot[queue_index] + word_offset
+        lw      t9, 0x0000(t6)              // t9 = saved word from outgoing slot
+        or      t4, t2, r0                  // t4 = loop count = stocks_remaining
+        or      t5, t6, r0                  // t5 = write ptr
+
+        _rotate_charge_inner:
+        lw      a0, 0x0010(t5)              // a0 = next slot's word at this offset (16 bytes ahead)
+        sw      a0, 0x0000(t5)              // shift left
+        addiu   t4, t4, -0x0001
+        bnez    t4, _rotate_charge_inner
+        addiu   t5, t5, 0x0010              // advance write ptr (delay slot)
+        sw      t9, 0x0000(t5)              // place saved word at back of live queue
+
+        addiu   t7, t7, 0x0004              // word_offset += 4
+        sltiu   t6, t7, 0x0010              // t6 = 1 if still within slot
+        bnez    t6, _rotate_charge_outer
+        nop
+
+        // ── Step 9: Set 60-frame cooldown ────────────────────────────────────────
+        li      t0, swap_cooldown
+        addu    t0, t0, s0
+        lli     t1, 60
+        sb      t1, 0x0000(t0)
+
+        // ── Step 10: Save outgoing player's position & facing before destroy ──────
+        // The position struct lives at gobj+0x0074. Coordinates are at
+        // +0x001C (x), +0x0020 (y), +0x0024 (z). Facing direction is a float
+        // at +0x0044 of the player struct (-1.0 = left, 1.0 = right).
+        lw      t0, 0x0074(s1)              // t0 = old position struct
+        lw      t4, 0x001C(t0)              // t4 = x
+        lw      t5, 0x0020(t0)              // t5 = y
+        lw      t6, 0x0024(t0)              // t6 = z
+        lw      t7, 0x0044(s2)              // t7 = facing direction (float, from player struct)
+        sw      t4, 0x001C(sp)              // save x
+        sw      t5, 0x0020(sp)              // save y
+        sw      t6, 0x0024(sp)              // save z
+        sw      t7, 0x0028(sp)              // save facing
+
+        // Also stash the held-item pointer so the new fighter inherits whatever
+        // item the outgoing char was carrying (Bumper, Hammer, projectile pickup,
+        // etc.). The item's owner pointer is already retargeted to the new GObj
+        // by load_next_char_'s item loop; we just need to wire it into the new
+        // player struct's held-item slot too.
+        lw      t4, 0x084C(s2)              // t4 = held_item pointer (0 if none)
+        sw      t4, 0x0030(sp)              // save held_item for post-jal restore
+
+        // ── Step 11: Trigger swap ─────────────────────────────────────────────────
+        // stocks_remaining is UNCHANGED → load_next_char_ picks the same queue_index,
+        // which now holds the next character after the left-rotation above.
+        // Save port + queue_index first — load_next_char_ clobbers s0.
+        sw      s0, 0x0014(sp)              // save port for post-jal restore
+        sw      t3, 0x0018(sp)              // save queue_index for post-jal restore
+
+        jal     load_next_char_
+        or      a0, s1, r0                  // a0 = player GObj (delay slot)
+
+        // ── Step 12: Find newly-spawned player GObj for this port ────────────────
+        lw      t8, 0x0014(sp)              // t8 = port (s0 was clobbered by load_next_char_)
+        lw      t9, 0x0018(sp)              // t9 = queue_index
+
+        li      t0, 0x800466FC
+        lw      t0, 0x0000(t0)              // t0 = first GObj
+
+        _find_new_gobj:
+        beqz    t0, _try_match_struct_new   // GObj list exhausted → match struct fallback
+        nop
+        lw      t1, 0x0084(t0)              // t1 = player struct
+        beqz    t1, _find_new_gobj_next     // skip GObjs without a player struct
+        nop
+        lbu     t2, 0x000D(t1)              // t2 = port_id
+        beq     t2, t8, _restore_position   // found our port
+        nop
+        _find_new_gobj_next:
+        b       _find_new_gobj
+        lw      t0, 0x0004(t0)              // t0 = next GObj (delay slot)
+
+        _try_match_struct_new:
+        // Fallback to match struct (same pattern as _try_match_struct above)
+        li      t1, Global.vs.p1
+        lli     t2, Global.vs.P_DIFF
+        multu   t8, t2
+        mflo    t2
+        addu    t1, t1, t2                  // t1 = match player struct
+        lw      t0, 0x0058(t1)              // t0 = player object
+        beqz    t0, _end                    // nothing found → give up
+        nop
+        lw      t1, 0x0084(t0)              // t1 = player struct
+        beqz    t1, _end
+        nop
+
+        _restore_position:
+        // t0 = new player gobj, t1 = new player struct
+        // Restore position into the new player's position struct.
+        lw      t2, 0x0074(t0)              // t2 = new position struct
+        beqz    t2, _restore_held_item      // sanity — no position struct, still do item/charge/damage
+        nop
+        lw      t4, 0x001C(sp)              // t4 = saved x
+        lw      t5, 0x0020(sp)              // t5 = saved y
+        lw      t6, 0x0024(sp)              // t6 = saved z
+        sw      t4, 0x001C(t2)              // write x
+        sw      t5, 0x0020(t2)              // write y
+        sw      t6, 0x0024(t2)              // write z
+        // The player struct holds a separate copy of x in 0x0078's pointee — keep it
+        // in sync so collision/clipping don't snap the fighter back to the spawn point.
+        lw      t3, 0x0078(t1)              // t3 = player struct x/y/z pointer
+        beqz    t3, _restore_facing         // if not present, just skip
+        nop
+        sw      t4, 0x0000(t3)              // mirror x
+        sw      t5, 0x0004(t3)              // mirror y
+        sw      t6, 0x0008(t3)              // mirror z
+
+        _restore_facing:
+        lw      t7, 0x0028(sp)              // t7 = saved facing
+        sw      t7, 0x0044(t1)              // restore facing
+
+        _restore_held_item:
+        // Restore held-item pointer so the new fighter is wired to the same item
+        // the outgoing char was holding. load_next_char_'s item loop already
+        // pointed the item's owner field at the new GObj, so this completes the
+        // round trip and the item rides along with the swap.
+        lw      t7, 0x0030(sp)              // t7 = saved held_item pointer
+        sw      t7, 0x084C(t1)              // restore held_item pointer
+
+        _restore_charge:
+        // Restore the new (incoming) char's B-special charge state from the slot
+        // that landed at queue_index after the left-rotation in Step 8.5.
+        li      t2, saved_charge
+        lli     t3, 0x0060                  // 96 bytes per port
+        multu   t8, t3
+        mflo    t3
+        sll     t4, t9, 0x0004              // queue_index * 16
+        addu    t2, t2, t3
+        addu    t2, t2, t4                  // t2 = &saved_charge[port][queue_index]
+        lw      t3, 0x0000(t2)
+        sw      t3, 0x0ADC(t1)
+        lw      t3, 0x0004(t2)
+        sw      t3, 0x0AE0(t1)
+        lw      t3, 0x0008(t2)
+        sw      t3, 0x0AE4(t1)
+        lw      t3, 0x000C(t2)
+        sw      t3, 0x0AE8(t1)
+
+        _restore_damage:
+        // ── Step 13: Restore incoming char's saved damage ────────────────────────
+        // After the left-rotation in step 8, saved_damage[port][queue_index] now holds
+        // what was at [queue_index+1] before — the incoming char's prior damage. ✓
+        li      t2, saved_damage
+        lli     t3, 0x0018
+        multu   t8, t3
+        mflo    t3                          // port * 24
+        sll     t4, t9, 0x0002              // queue_index * 4
+        addu    t2, t2, t3
+        addu    t2, t2, t4                  // &saved_damage[port][queue_index]
+        lw      t3, 0x0000(t2)              // t3 = incoming char's saved damage
+
+        beqz    t3, _end                    // if 0%, nothing to restore — done
+        nop
+
+        // t1 = new player struct, t3 = damage to add (new char spawned at 0%, add saved amount)
+        or      a0, t1, r0                  // a0 = player struct
+        jal     Character.add_percent_      // safe wrapper around 0x800EA248
+        or      a1, t3, r0                  // a1 = damage to restore (delay slot)
+
+        b       _end
+        nop
+
+        _next_port:
+        addiu   s0, s0, 0x0001             // port++
+        lli     t0, 0x0004
+        bne     s0, t0, _port_loop          // loop while port < 4
+        nop
+        b       _end
+        nop
+
+        _reset_all_holds:
+        // Game isn't actively running (paused, ending, resetting…). Wipe all
+        // per-port hold counters so a fresh hold is required once play resumes.
+        // Cooldowns are left alone — they tick down on their own and shouldn't
+        // be cleared just because the user opened the pause menu.
+        li      t0, hold_counter
+        sw      r0, 0x0000(t0)              // clear all 4 hold counter bytes
+        // fall through to _end
+
+        _end:
+        lw      ra, 0x0004(sp)
+        lw      s0, 0x0008(sp)              // restore caller s0
+        lw      s1, 0x000C(sp)              // restore caller s1
+        lw      s2, 0x0010(sp)              // restore caller s2
+        jr      ra
+        addiu   sp, sp, 0x0040              // deallocate (delay slot)
     }
 
     // @ Description
