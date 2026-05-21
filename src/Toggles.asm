@@ -2446,7 +2446,8 @@ scope Toggles {
     entry_single_button_mode:;          entry("Single Button Mode", Menu.type.INT, 0, 0, 0, 0, 0, 6, OS.NULL, string_table_single_button_mode, OS.NULL, entry_item_dropping)
     entry_item_dropping:;               entry_bool("All Items R Drop (Aerial)", OS.FALSE, OS.FALSE, OS.FALSE, OS.FALSE, entry_move_staling)
     entry_move_staling:;                entry("Move Staling", Menu.type.INT, 0, 0, 0, 0, 0, 6, OS.NULL, string_table_move_staling, OS.NULL, entry_stopwatch_behaviour)
-    entry_stopwatch_behaviour:;         entry("Stopwatch Item", Menu.type.INT, 0, 0, 0, 0, 0, 4, OS.NULL, string_table_stopwatch_item, OS.NULL, OS.NULL)
+    entry_stopwatch_behaviour:;         entry("Stopwatch Item", Menu.type.INT, 0, 0, 0, 0, 0, 4, OS.NULL, string_table_stopwatch_item, OS.NULL, entry_tag_team_manual_swap)
+    entry_tag_team_manual_swap:;        entry_bool("Tag Team L+Z Swap", OS.TRUE, OS.TRUE, OS.TRUE, OS.TRUE, OS.NULL)
 
 
     evaluate num_gameplay_toggles(num_toggles - {num_remix_toggles})

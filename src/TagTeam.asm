@@ -955,6 +955,33 @@ scope TagTeam {
         bnez    t1, _clear_charge_loop
         addiu   t0, t0, 0x0004              // advance pointer (delay slot)
 
+        // For every Kirby / J Kirby slot in the queue, prefill the saved_charge
+        // entry's first word (= 0x0ADC mirror, which the restore writes back to
+        // the player's "copied power char_id" field) with Kirby's own char_id.
+        // A plain zero here would mean "Kirby has Mario's power" because Mario
+        // is char_id 0x00; NONE (0x1C) would index past Kirby's NSP table and
+        // crash on B-press. Kirby's own id (0x08) selects vanilla inhale.
+        li      t2, character_queues
+        li      t3, saved_charge
+        lli     t4, 24                      // total slots (4 ports * 6)
+        _kirby_default_loop:
+        lbu     t5, 0x0000(t2)              // t5 = char_id for this slot
+        lli     t6, Character.id.KIRBY
+        beq     t5, t6, _kirby_default_set
+        lli     t6, Character.id.JKIRBY
+        beq     t5, t6, _kirby_default_set
+        nop
+        b       _kirby_default_next
+        nop
+        _kirby_default_set:
+        lli     t6, Character.id.KIRBY
+        sw      t6, 0x0000(t3)              // saved_charge.slot.0x0ADC = Kirby's own id ("no copied power")
+        _kirby_default_next:
+        addiu   t4, t4, -0x0001
+        addiu   t2, t2, 0x0004              // character_queues stride = 4 bytes per slot
+        bnez    t4, _kirby_default_loop
+        addiu   t3, t3, 0x0010              // saved_charge stride = 16 bytes per slot (delay slot)
+
         // Register check_swap_input_ as a per-frame GObj routine (once at match start)
         addiu   a0, r0, 0x03FD              // unique ID for the swap input checker GObj
         li      a1, check_swap_input_       // routine to run every frame
@@ -1362,7 +1389,26 @@ scope TagTeam {
 
         lw      a0, 0x00AC(sp)              // a0 = player object
         lw      a1, 0x0084(a0)              // a1 = player struct
-        sw      r0, 0x0ADC(a1)              // clear space commonly used for tracking various ammo
+        // Clear 0x0ADC (free space used by ammo/timer/etc.). For Kirby & J Kirby
+        // this slot holds the *char_id* of the currently copied power, indexing
+        // into kirby_air_nsp.table / kirby_ground_nsp.table when B is pressed.
+        // 0x00 = Mario (fireball) so a plain clear would give Kirby Mario's power.
+        // Character.id.NONE (0x1C) is also wrong: it indexes past the NSP table
+        // and the resulting bogus pointer crashes the game on B-press.
+        // The correct "no power" sentinel is Kirby's own char_id (0x08) — that
+        // slot in the NSP table points at vanilla Kirby's inhale routine.
+        lw      t0, 0x0008(a1)              // t0 = new char_id
+        lli     t9, Character.id.KIRBY
+        beq     t0, t9, _kirby_no_power
+        lli     t9, Character.id.JKIRBY
+        beql    t0, t9, _kirby_no_power
+        nop
+        b       _continue_after_adc_clear
+        sw      r0, 0x0ADC(a1)              // (delay slot) non-Kirby → zero
+        _kirby_no_power:
+        lli     t9, Character.id.KIRBY
+        sw      t9, 0x0ADC(a1)              // Kirby/JKirby → own char_id = no copied power
+        _continue_after_adc_clear:
         lbu     t0, 0x000D(a1)              // t0 = port_id
 
         // Change damage series icon
@@ -1519,6 +1565,13 @@ scope TagTeam {
         OS.read_word(VsRemixMenu.vs_mode_flag, t0)
         lli     t1, VsRemixMenu.mode.TAG_TEAM
         bne     t0, t1, _end
+        nop
+
+        // Bail out if the user disabled manual swapping in the Gameplay toggles.
+        // The toggle is read each frame so it picks up changes mid-match (e.g. for
+        // testing); the cost is one extra load + branch per port iteration.
+        Toggles.read(entry_tag_team_manual_swap, t0)
+        beqz    t0, _reset_all_holds         // OFF → wipe counters and exit
         nop
 
         // Skip the entire swap check while the game is paused or otherwise not
@@ -1937,13 +1990,69 @@ scope TagTeam {
         addu    t2, t2, t3
         addu    t2, t2, t4                  // t2 = &saved_charge[port][queue_index]
         lw      t3, 0x0000(t2)
-        sw      t3, 0x0ADC(t1)
-        lw      t3, 0x0004(t2)
-        sw      t3, 0x0AE0(t1)
-        lw      t3, 0x0008(t2)
-        sw      t3, 0x0AE4(t1)
-        lw      t3, 0x000C(t2)
-        sw      t3, 0x0AE8(t1)
+        sw      t3, 0x0ADC(t1)              // t3 also = restored Kirby power id (used below)
+        lw      t5, 0x0004(t2)
+        sw      t5, 0x0AE0(t1)
+        lw      t5, 0x0008(t2)
+        sw      t5, 0x0AE4(t1)
+        lw      t5, 0x000C(t2)
+        sw      t5, 0x0AE8(t1)
+
+        _restore_kirby_hat:
+        // If the new fighter is Kirby / J Kirby and the restored power id at
+        // 0x0ADC is a real character (i.e. not NONE = no power), the hat model
+        // has to be physically re-attached — load_next_char_ just spawns the
+        // default model, and unlike a fresh inhale-and-swallow there's no game
+        // routine that lays the hat on the head bone automatically.
+        //
+        // We replicate the snippet from Kirby.asm that runs after a Magic Hat
+        // randomizer roll: look up the hat id in kirby_inhale_struct.table for
+        // the absorbed char_id, call set-part (0x800E8EAC) + swap-part
+        // (0x800E8ECC) on the player object with part id 6.
+        lw      t4, 0x0008(t1)              // t4 = new char_id
+        lli     t5, Character.id.KIRBY
+        beq     t4, t5, _kirby_hat_apply
+        lli     t5, Character.id.JKIRBY
+        beq     t4, t5, _kirby_hat_apply
+        nop
+        b       _restore_damage             // not Kirby → skip hat work
+        nop
+
+        _kirby_hat_apply:
+        // t3 already holds the restored power char_id (saved above).
+        // Kirby's own id (0x08) is the "no copied power" sentinel — its inhale
+        // table entry sets hat_id to NONE, but we skip the set-part/swap-part
+        // calls entirely to avoid pointlessly retriggering the default model.
+        lli     t5, Character.id.KIRBY
+        beq     t3, t5, _restore_damage     // own id → no hat, nothing to attach
+        nop
+
+        // Stash the player gobj for after the jals (a0-a3 + t-regs get clobbered).
+        // port and queue_index are already on the stack at 0x14/0x18 so we just
+        // re-load them after the calls instead of saving them again.
+        sw      t0, 0x0034(sp)              // save new player gobj
+
+        // hat_id = kirby_inhale_struct.table[char_id * 12 + 2]
+        li      t5, Character.kirby_inhale_struct.table
+        sll     t6, t3, 0x0002              // t6 = char_id * 4
+        subu    t6, t6, t3                  // t6 = char_id * 3
+        sll     t6, t6, 0x0002              // t6 = char_id * 12
+        addu    t5, t5, t6
+        lh      a2, 0x0002(t5)              // a2 = hat_id
+
+        or      a0, t0, r0                  // a0 = player gobj
+        jal     0x800E8EAC                  // set part
+        lli     a1, 0x0006                  // a1 = part ID (Kirby hat) (delay slot)
+
+        lw      a0, 0x0034(sp)              // a0 = player gobj (reload)
+        jal     0x800E8ECC                  // swap part
+        nop
+
+        // Refresh t0 / t1 / t8 / t9 for the damage step that follows.
+        lw      t0, 0x0034(sp)              // t0 = player gobj
+        lw      t1, 0x0084(t0)              // t1 = player struct
+        lw      t8, 0x0014(sp)              // t8 = port
+        lw      t9, 0x0018(sp)              // t9 = queue_index
 
         _restore_damage:
         // ── Step 13: Restore incoming char's saved damage ────────────────────────
