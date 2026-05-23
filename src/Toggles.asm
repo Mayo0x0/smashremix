@@ -1105,7 +1105,8 @@ scope Toggles {
         constant TE(1)
         constant NE(2)
         constant JP(3)
-        constant CUSTOM(4)
+        constant CUSTOM_USER(4)             // user-saved profile (block_custom_*)
+        constant CUSTOM(5)                  // "doesn't match anything" fallback label
     }
 
     // @ Description
@@ -1140,7 +1141,8 @@ scope Toggles {
     dw profile_te
     dw profile_ne
     dw profile_jp
-    dw profile_custom
+    dw entry_custom_profile_name + 0x0028   // live input buffer (user-renameable)
+    dw profile_custom                       // fallback shown when no profile matches
 
     // @ Description
     // Shieldstun strings
@@ -2364,7 +2366,9 @@ scope Toggles {
     // @ Description
     // Contains list of submenus.
     head_super_menu:
-    Menu.entry("Load Profile:", Menu.type.INT, OS.FALSE, 0, 3, load_profile_, OS.NULL, string_table_profile, OS.NULL, entry_remix_settings)
+    Menu.entry("Load Profile:", Menu.type.INT, OS.FALSE, 0, 4, load_profile_, OS.NULL, string_table_profile, OS.NULL, entry_save_custom_profile)
+    entry_save_custom_profile:; Menu.entry_title("Save Custom Profile", custom_save_, entry_custom_profile_name)
+    entry_custom_profile_name:; Menu.entry_input(toggle_edit_mode_, 0, entry_remix_settings)
     entry_remix_settings:; Menu.entry_title("Remix Settings", show_remix_settings_, entry_gameplay_settings)
     entry_gameplay_settings:; Menu.entry_title("Gameplay Settings", show_gameplay_settings_, entry_music_settings)
     entry_music_settings:; Menu.entry_title("Music Settings", show_music_settings_, entry_stage_settings)
@@ -2861,6 +2865,27 @@ scope Toggles {
     OS.align(16)
     block_tags:; SRAM.block({MAX_TAGS} * 20) // 20 characters per tag
 
+    // @ Description
+    // SRAM blocks for the user-saved Custom Profile. Mirror the same per-head
+    // layout used by block_remix/gameplay/music/stages/pokemon so the existing
+    // Menu.export_ / Menu.import_ helpers can be reused without modification.
+    // The info block holds a magic word so we can detect "no profile saved yet"
+    // on a fresh SRAM, and the name block stores the user-chosen 20-char name.
+    OS.align(16)
+    block_custom_info:; SRAM.block(8)
+    OS.align(16)
+    block_custom_remix:; SRAM.block((({remix_toggles_block_size} / 32) + 1) * 4)
+    OS.align(16)
+    block_custom_gameplay:; SRAM.block((({gameplay_toggles_block_size} / 32) + 1) * 4)
+    OS.align(16)
+    block_custom_music:; SRAM.block((({music_toggles_block_size} / 32) + 1) * 4)
+    OS.align(16)
+    block_custom_stages:; SRAM.block((({stage_toggles_block_size} / 32) + 1) * 4)
+    OS.align(16)
+    block_custom_pokemon:; SRAM.block((({pokemon_toggles_block_size} / 32) + 1) * 4)
+    OS.align(16)
+    block_custom_name:; SRAM.block(20)
+
     sram_block_table:
     dw block_remix
     dw block_gameplay
@@ -2868,7 +2893,41 @@ scope Toggles {
     dw block_stages
     dw block_pokemon
     dw block_tags
+    dw block_custom_info
+    dw block_custom_remix
+    dw block_custom_gameplay
+    dw block_custom_music
+    dw block_custom_stages
+    dw block_custom_pokemon
+    dw block_custom_name
     dw 0 // leave blank to end
+
+    // Parallel head table for the per-head custom blocks (skips player_tags;
+    // tags shouldn't ride along with a profile snapshot).
+    custom_block_head_table:
+    dw head_remix_settings
+    dw head_gameplay_settings
+    dw head_music_settings
+    dw head_stage_settings
+    dw head_pokemon_settings
+    dw 0
+
+    // Parallel sram-block table aligned 1:1 with custom_block_head_table.
+    custom_sram_block_table:
+    dw block_custom_remix
+    dw block_custom_gameplay
+    dw block_custom_music
+    dw block_custom_stages
+    dw block_custom_pokemon
+    dw 0
+
+    // Magic word stored in block_custom_info to mark "this slot has been
+    // saved" so we can tell first-boot from a real saved profile.
+    constant CUSTOM_PROFILE_MAGIC(0x50524F46)   // ASCII "PROF"
+
+    // Default name copied into the name buffer on first boot.
+    custom_profile_default_name:; db "CustomProfil", 0
+    OS.align(4)
 
     block_head_table:
     dw head_remix_settings
@@ -3097,6 +3156,13 @@ scope Toggles {
 
         li      t0, head_super_menu            // t0 = address of menu entry
         lw      t0, 0x0004(t0)                 // t0 = selected profile
+
+        // Custom user-saved profile lives outside the static `profiles` table —
+        // hand it off to custom_load_ which pulls values out of block_custom_*.
+        lli     t1, profile.CUSTOM_USER
+        beq     t0, t1, _do_custom_user_load
+        nop
+
         li      t1, profiles
         sll     t2, t0, 0x0002                 // t2 = offset to profile defaults
         addu    t1, t1, t2                     // t1 = address of profile defaults
@@ -3137,6 +3203,13 @@ scope Toggles {
         bnez    t0, _begin                     // if more blocks, do loop
         nop                                    // ~
 
+        b       _end
+        nop
+
+        _do_custom_user_load:
+        jal     custom_load_
+        nop
+
         _end:
         lw      ra, 0x0004(sp)                 // ~
         lw      t0, 0x0008(sp)                 // ~
@@ -3147,6 +3220,181 @@ scope Toggles {
         addiu   sp, sp, 0x0020                 // deallocate stack sapce
         jr      ra                             // return
         nop
+    }
+
+    // @ Description
+    // Saves the current toggle values into block_custom_* and flushes them to
+    // SRAM. Also imprints CUSTOM_PROFILE_MAGIC into block_custom_info so the
+    // load side knows a real profile lives here (not just zeroed SRAM).
+    // The 20-char name buffer is copied from the live INPUT entry into
+    // block_custom_name's RAM mirror, then persisted with the rest.
+    scope custom_save_: {
+        addiu   sp, sp, -0x0020
+        sw      ra, 0x0004(sp)
+        sw      t0, 0x0008(sp)
+        sw      t1, 0x000C(sp)
+        sw      t2, 0x0010(sp)
+        sw      a0, 0x0014(sp)
+        sw      a1, 0x0018(sp)
+
+        // ── Step 1: Export each head's live values into its custom block. ──
+        lli     t0, 0                         // t0 = table offset
+
+        _export_loop:
+        sw      t0, 0x001C(sp)
+        li      a0, custom_block_head_table
+        addu    a0, a0, t0
+        lw      a0, 0x0000(a0)                // a0 = head pointer
+        beqz    a0, _export_done              // 0 = end of list
+        li      a1, custom_sram_block_table
+        addu    a1, a1, t0
+        jal     Menu.export_
+        lw      a1, 0x0000(a1)                // a1 = block (delay slot)
+
+        lw      t0, 0x001C(sp)
+        b       _export_loop
+        addiu   t0, t0, 0x0004
+
+        _export_done:
+        // ── Step 2: Copy the live name from the INPUT entry into block_custom_name's RAM mirror.
+        li      t1, entry_custom_profile_name + 0x0028
+        li      t2, block_custom_name + 0x0010
+        lw      t0, 0x0000(t1); sw      t0, 0x0000(t2)
+        lw      t0, 0x0004(t1); sw      t0, 0x0004(t2)
+        lw      t0, 0x0008(t1); sw      t0, 0x0008(t2)
+        lw      t0, 0x000C(t1); sw      t0, 0x000C(t2)
+        lw      t0, 0x0010(t1); sw      t0, 0x0010(t2)
+
+        // ── Step 3: Stamp the "has saved" magic into block_custom_info ──
+        li      t1, block_custom_info + 0x0010
+        li      t0, CUSTOM_PROFILE_MAGIC
+        sw      t0, 0x0000(t1)
+        sw      r0, 0x0004(t1)                // reserved second word
+
+        // ── Step 4: Flush every custom block to SRAM ──────────────────────
+        li      a0, block_custom_info
+        jal     SRAM.save_
+        nop
+        li      a0, block_custom_remix
+        jal     SRAM.save_
+        nop
+        li      a0, block_custom_gameplay
+        jal     SRAM.save_
+        nop
+        li      a0, block_custom_music
+        jal     SRAM.save_
+        nop
+        li      a0, block_custom_stages
+        jal     SRAM.save_
+        nop
+        li      a0, block_custom_pokemon
+        jal     SRAM.save_
+        nop
+        li      a0, block_custom_name
+        jal     SRAM.save_
+        nop
+
+        lw      ra, 0x0004(sp)
+        lw      t0, 0x0008(sp)
+        lw      t1, 0x000C(sp)
+        lw      t2, 0x0010(sp)
+        lw      a0, 0x0014(sp)
+        lw      a1, 0x0018(sp)
+        jr      ra
+        addiu   sp, sp, 0x0020
+    }
+
+    // @ Description
+    // Imports the saved custom profile from block_custom_* into the live menu
+    // entries. Counterpart to load_profile_'s built-in path but pulling from
+    // SRAM blocks instead of a compile-time defaults array.
+    scope custom_load_: {
+        addiu   sp, sp, -0x0020
+        sw      ra, 0x0004(sp)
+        sw      t0, 0x0008(sp)
+        sw      a0, 0x000C(sp)
+        sw      a1, 0x0010(sp)
+
+        lli     t0, 0                         // table offset
+
+        _loop:
+        sw      t0, 0x0014(sp)
+        li      a0, custom_block_head_table
+        addu    a0, a0, t0
+        lw      a0, 0x0000(a0)
+        beqz    a0, _done
+        li      a1, custom_sram_block_table
+        addu    a1, a1, t0
+        jal     Menu.import_
+        lw      a1, 0x0000(a1)                // (delay slot) a1 = block
+
+        lw      t0, 0x0014(sp)
+        b       _loop
+        addiu   t0, t0, 0x0004
+
+        _done:
+        lw      ra, 0x0004(sp)
+        lw      t0, 0x0008(sp)
+        lw      a0, 0x000C(sp)
+        lw      a1, 0x0010(sp)
+        jr      ra
+        addiu   sp, sp, 0x0020
+    }
+
+    // @ Description
+    // Initialises the live name input buffer at boot. Runs after SRAM.load_
+    // has populated block_custom_name. If the info block's magic word is
+    // present we trust the SRAM contents; otherwise we copy the compile-time
+    // default ("CustomProfil") into the input buffer so the menu has something
+    // sensible to show before the user ever saves a profile.
+    scope custom_init_: {
+        addiu   sp, sp, -0x0018
+        sw      ra, 0x0004(sp)
+        sw      t0, 0x0008(sp)
+        sw      t1, 0x000C(sp)
+        sw      t2, 0x0010(sp)
+
+        // Check magic — if not set, fall back to default name in ROM.
+        li      t0, block_custom_info + 0x0010
+        lw      t1, 0x0000(t0)
+        li      t2, CUSTOM_PROFILE_MAGIC
+        beq     t1, t2, _from_sram
+        nop
+
+        // Copy "CustomProfil\0" into both block_custom_name's RAM mirror and
+        // the input entry buffer. The string is 13 bytes incl. terminator —
+        // round up to 20 by zero-padding the rest.
+        li      t0, custom_profile_default_name
+        li      t1, entry_custom_profile_name + 0x0028
+        li      t2, block_custom_name + 0x0010
+        // First 16 bytes (4 words) cover the 13-byte name including null
+        lw      a0, 0x0000(t0); sw a0, 0x0000(t1); sw a0, 0x0000(t2)
+        lw      a0, 0x0004(t0); sw a0, 0x0004(t1); sw a0, 0x0004(t2)
+        lw      a0, 0x0008(t0); sw a0, 0x0008(t1); sw a0, 0x0008(t2)
+        lw      a0, 0x000C(t0); sw a0, 0x000C(t1); sw a0, 0x000C(t2)
+        // Final word zeroes the 17–20 tail
+        sw      r0, 0x0010(t1)
+        sw      r0, 0x0010(t2)
+        b       _end
+        nop
+
+        _from_sram:
+        // Real profile saved before — sync the input buffer to SRAM contents.
+        li      t1, block_custom_name + 0x0010
+        li      t2, entry_custom_profile_name + 0x0028
+        lw      t0, 0x0000(t1); sw t0, 0x0000(t2)
+        lw      t0, 0x0004(t1); sw t0, 0x0004(t2)
+        lw      t0, 0x0008(t1); sw t0, 0x0008(t2)
+        lw      t0, 0x000C(t1); sw t0, 0x000C(t2)
+        lw      t0, 0x0010(t1); sw t0, 0x0010(t2)
+
+        _end:
+        lw      ra, 0x0004(sp)
+        lw      t0, 0x0008(sp)
+        lw      t1, 0x000C(sp)
+        lw      t2, 0x0010(sp)
+        jr      ra
+        addiu   sp, sp, 0x0018
     }
 
     // @ Description

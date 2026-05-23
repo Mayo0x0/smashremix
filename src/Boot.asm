@@ -220,6 +220,13 @@ scope Boot {
         nop
 
         _continue:
+        // Sync the Custom Profile name buffer (RAM input entry) with SRAM after
+        // Toggles.load_ has populated block_custom_*. Also runs after a fresh
+        // SRAM.initialize_, in which case the magic word is absent and the
+        // buffer falls back to the compile-time default "CustomProfil".
+        jal     Toggles.custom_init_
+        nop
+
         lw      t0, 0x0004(sp)          // restore t0
         addiu   sp, sp, 0x0008          // deallocate stack space
 
