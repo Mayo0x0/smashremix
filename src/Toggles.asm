@@ -3481,11 +3481,18 @@ scope Toggles {
         _next_profile:
         beqz    t0, _end                       // if (entry = null), then we have the correct profile in v0
         nop
-        sltiu   t5, v0, profile.CUSTOM - 1     // t5 = 1 if we haven't reached the end of profiles
+        // Only iterate over the 4 built-in defaults arrays (CE/TE/NE/JP).
+        // profile.CUSTOM_USER lives in SRAM (not in the `profiles` pointer
+        // table) and profile.CUSTOM is a display-only fallback id — checking
+        // either of them here would index past `profiles` and crash on the
+        // garbage pointer the next loop iteration tries to dereference.
+        sltiu   t5, v0, profile.CUSTOM_USER - 1 // t5 = 1 while v0 still points at a built-in profile
         bnez    t5, _load                      // if more profiles to check, load the next one
         addiu   v0, v0, 0x0001                 // v0 = next profile index
 
-        // if we made it here, it's not one of our profiles, and v0 = CUSTOM
+        // If we made it here, none of the built-ins matched. v0 is now
+        // profile.CUSTOM_USER which makes the dropdown show the user-saved
+        // profile name (or the default "CustomProfil" if none saved yet).
 
         _end:
         lw      ra, 0x0004(sp)                 // ~
