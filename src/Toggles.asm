@@ -3294,6 +3294,12 @@ scope Toggles {
         jal     SRAM.save_
         nop
 
+        // Belt-and-braces: ensure has_saved is set so the next boot's
+        // check_saved_ takes the load path instead of running SRAM.initialize_
+        // and wiping the data we just wrote.
+        jal     SRAM.mark_saved_
+        nop
+
         lw      ra, 0x0004(sp)
         lw      t0, 0x0008(sp)
         lw      t1, 0x000C(sp)
