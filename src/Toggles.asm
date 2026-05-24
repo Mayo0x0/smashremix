@@ -2886,6 +2886,23 @@ scope Toggles {
     OS.align(16)
     block_custom_name:; SRAM.block(20)
 
+    // @ Description
+    // SRAM block that mirrors the Global.vs.* match settings (handicap, team
+    // attack, stage select, damage, item frequency, time, stocks) plus the two
+    // item-enabled bitmasks. Saved on every VS Mode menu exit, applied on top
+    // of the Tournament defaults in Settings.set_vs_settings_. A magic word in
+    // the first slot tells us whether the data is from a real save or just
+    // freshly-zeroed SRAM.
+    OS.align(16)
+    block_vs_options:; SRAM.block(32)
+
+    // Custom-Profile mirror — populated by custom_save_ from the live values
+    // and replayed back into the Global.vs.* addresses by custom_load_.
+    OS.align(16)
+    block_custom_vs_options:; SRAM.block(32)
+
+    constant VS_OPTIONS_MAGIC(0x564F5054)        // ASCII "VOPT"
+
     sram_block_table:
     dw block_remix
     dw block_gameplay
@@ -2900,6 +2917,8 @@ scope Toggles {
     dw block_custom_stages
     dw block_custom_pokemon
     dw block_custom_name
+    dw block_vs_options
+    dw block_custom_vs_options
     dw 0 // leave blank to end
 
     // Parallel head table for the per-head custom blocks (skips player_tags;
@@ -2952,6 +2971,8 @@ scope Toggles {
     dw 0 // block_custom_stages
     dw 0 // block_custom_pokemon
     dw 0 // block_custom_name
+    dw 0 // block_vs_options          — handled by vs_options_load_
+    dw 0 // block_custom_vs_options   — handled by custom_load_
     dw 0 // real list terminator
 
     profile_defaults_CE:; write_defaults_for(CE)
@@ -3310,6 +3331,15 @@ scope Toggles {
         jal     SRAM.save_
         nop
 
+        // ── Step 5: Snapshot live VS options into block_custom_vs_options
+        // so the Custom Profile remembers them alongside the toggle state.
+        li      a0, block_custom_vs_options + 0x0010
+        jal     vs_options_pack_
+        nop
+        li      a0, block_custom_vs_options
+        jal     SRAM.save_
+        nop
+
         // Belt-and-braces: ensure has_saved is set so the next boot's
         // check_saved_ takes the load path instead of running SRAM.initialize_
         // and wiping the data we just wrote.
@@ -3355,6 +3385,14 @@ scope Toggles {
         addiu   t0, t0, 0x0004
 
         _done:
+        // Replay the snapshot VS Mode settings into Global.vs.* alongside
+        // the toggle values. vs_options_unpack_ no-ops if the saved block
+        // lacks the magic (e.g. the profile was saved before this feature
+        // existed).
+        li      a0, block_custom_vs_options + 0x0010
+        jal     vs_options_unpack_
+        nop
+
         lw      ra, 0x0004(sp)
         lw      t0, 0x0008(sp)
         lw      a0, 0x000C(sp)
@@ -3417,6 +3455,149 @@ scope Toggles {
         lw      t2, 0x0010(sp)
         jr      ra
         addiu   sp, sp, 0x0018
+    }
+
+    // @ Description
+    // Helper: packs the live VS Mode match settings into a 32-byte buffer.
+    // Used by both vs_options_save_ (normal SRAM persistence) and custom_save_
+    // (Custom Profile snapshot). The caller supplies a0 = buffer address (= a
+    // block's RAM data slot, i.e. block_X + 0x10). Layout matches
+    // vs_options_unpack_'s expectations 1:1.
+    // @ Arguments
+    // a0 - destination buffer (32 bytes)
+    scope vs_options_pack_: {
+        addiu   sp, sp, -0x0010
+        sw      t0, 0x0004(sp)
+        sw      t1, 0x0008(sp)
+        sw      t2, 0x000C(sp)
+
+        // +0x00: magic
+        li      t0, VS_OPTIONS_MAGIC
+        sw      t0, 0x0000(a0)
+
+        // +0x04..+0x0A: VS settings byte-packed
+        li      t1, Global.vs.handicap
+        lbu     t0, 0x0000(t1); sb t0, 0x0004(a0)
+        li      t1, Global.vs.team_attack
+        lbu     t0, 0x0000(t1); sb t0, 0x0005(a0)
+        li      t1, Global.vs.stage_select
+        lbu     t0, 0x0000(t1); sb t0, 0x0006(a0)
+        li      t1, Global.vs.damage
+        lbu     t0, 0x0000(t1); sb t0, 0x0007(a0)
+        li      t1, Global.vs.item_frequency
+        lbu     t0, 0x0000(t1); sb t0, 0x0008(a0)
+        li      t1, Global.vs.time
+        lbu     t0, 0x0000(t1); sb t0, 0x0009(a0)
+        li      t1, Global.vs.stocks
+        lbu     t0, 0x0000(t1); sb t0, 0x000A(a0)
+        sb      r0, 0x000B(a0)                  // padding
+
+        // +0x0C: vanilla item bitmask
+        li      t1, Item.ENABLED_BITMASK
+        lw      t0, 0x0000(t1)
+        sw      t0, 0x000C(a0)
+
+        // +0x10..+0x17: extended item bitmask (in-match + saved)
+        li      t1, Item.EXTENDED_ENABLED_BITMASK
+        lw      t0, 0x0000(t1); sw t0, 0x0010(a0)
+        lw      t0, 0x0004(t1); sw t0, 0x0014(a0)
+
+        // +0x18..+0x1F: reserved (zero out)
+        sw      r0, 0x0018(a0)
+        sw      r0, 0x001C(a0)
+
+        lw      t0, 0x0004(sp)
+        lw      t1, 0x0008(sp)
+        lw      t2, 0x000C(sp)
+        jr      ra
+        addiu   sp, sp, 0x0010
+    }
+
+    // @ Description
+    // Helper: counterpart to vs_options_pack_. Reads the 32-byte buffer at a0,
+    // checks the magic word, and if valid applies the saved values back to the
+    // live Global.vs.* addresses and the two item bitmasks. If the magic is
+    // missing the buffer is just ignored — the caller's defaults remain.
+    // @ Arguments
+    // a0 - source buffer (32 bytes)
+    scope vs_options_unpack_: {
+        addiu   sp, sp, -0x0010
+        sw      t0, 0x0004(sp)
+        sw      t1, 0x0008(sp)
+        sw      t2, 0x000C(sp)
+
+        lw      t0, 0x0000(a0)                   // magic word
+        li      t1, VS_OPTIONS_MAGIC
+        bne     t0, t1, _skip                    // no valid save → leave defaults
+        nop
+
+        // VS settings bytes back to the live addresses
+        lbu     t0, 0x0004(a0); li t1, Global.vs.handicap;       sb t0, 0x0000(t1)
+        lbu     t0, 0x0005(a0); li t1, Global.vs.team_attack;    sb t0, 0x0000(t1)
+        lbu     t0, 0x0006(a0); li t1, Global.vs.stage_select;   sb t0, 0x0000(t1)
+        lbu     t0, 0x0007(a0); li t1, Global.vs.damage;         sb t0, 0x0000(t1)
+        lbu     t0, 0x0008(a0); li t1, Global.vs.item_frequency; sb t0, 0x0000(t1)
+        lbu     t0, 0x0009(a0); li t1, Global.vs.time;           sb t0, 0x0000(t1)
+        lbu     t0, 0x000A(a0); li t1, Global.vs.stocks;         sb t0, 0x0000(t1)
+
+        // Vanilla item bitmask
+        lw      t0, 0x000C(a0); li t1, Item.ENABLED_BITMASK; sw t0, 0x0000(t1)
+
+        // Extended item bitmask (in-match + saved word)
+        li      t1, Item.EXTENDED_ENABLED_BITMASK
+        lw      t0, 0x0010(a0); sw t0, 0x0000(t1)
+        lw      t0, 0x0014(a0); sw t0, 0x0004(t1)
+
+        _skip:
+        lw      t0, 0x0004(sp)
+        lw      t1, 0x0008(sp)
+        lw      t2, 0x000C(sp)
+        jr      ra
+        addiu   sp, sp, 0x0010
+    }
+
+    // @ Description
+    // Snapshots the live VS Mode settings into block_vs_options and flushes the
+    // block to SRAM. Wired up from VsRemixMenu.save_global_settings_ so the
+    // user's options persist across reboots without needing a Custom Profile.
+    scope vs_options_save_: {
+        addiu   sp, sp, -0x0010
+        sw      ra, 0x0004(sp)
+        sw      a0, 0x0008(sp)
+
+        li      a0, block_vs_options + 0x0010       // a0 = block's RAM data area
+        jal     vs_options_pack_
+        nop
+
+        jal     SRAM.save_
+        li      a0, block_vs_options                // delay slot — block header
+
+        jal     SRAM.mark_saved_                    // ensure the load path runs next boot
+        nop
+
+        lw      ra, 0x0004(sp)
+        lw      a0, 0x0008(sp)
+        jr      ra
+        addiu   sp, sp, 0x0010
+    }
+
+    // @ Description
+    // Re-applies the saved VS Mode settings from block_vs_options. Called from
+    // Settings.set_vs_settings_ after the Tournament defaults are written, so
+    // a missing save leaves Tournament defaults intact.
+    scope vs_options_load_: {
+        addiu   sp, sp, -0x0010
+        sw      ra, 0x0004(sp)
+        sw      a0, 0x0008(sp)
+
+        li      a0, block_vs_options + 0x0010       // source buffer
+        jal     vs_options_unpack_
+        nop
+
+        lw      ra, 0x0004(sp)
+        lw      a0, 0x0008(sp)
+        jr      ra
+        addiu   sp, sp, 0x0010
     }
 
     // @ Description
