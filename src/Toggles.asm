@@ -2929,6 +2929,15 @@ scope Toggles {
     custom_profile_default_name:; db "CustomProfil", 0
     OS.align(4)
 
+    // @ Description
+    // Head pointers aligned 1:1 with sram_block_table. The first 6 entries are
+    // the heads Toggles.save_ walks during a normal menu-exit save. The 7 null
+    // entries after the first terminator correspond to block_custom_info/
+    // _remix/_gameplay/_music/_stages/_pokemon/_name in sram_block_table.
+    // Without them, Toggles.load_ would keep iterating past this table while
+    // looking up a head for each custom block, read garbage as the head
+    // pointer, and crash Menu.import_ when it tried to follow the bogus
+    // linked list. The trailing 0 is the real list terminator.
     block_head_table:
     dw head_remix_settings
     dw head_gameplay_settings
@@ -2936,7 +2945,14 @@ scope Toggles {
     dw head_stage_settings
     dw head_pokemon_settings
     dw head_player_tags
-    dw 0 // leave blank for last
+    dw 0 // block_custom_info  — no head; load_ must see a null here
+    dw 0 // block_custom_remix
+    dw 0 // block_custom_gameplay
+    dw 0 // block_custom_music
+    dw 0 // block_custom_stages
+    dw 0 // block_custom_pokemon
+    dw 0 // block_custom_name
+    dw 0 // real list terminator
 
     profile_defaults_CE:; write_defaults_for(CE)
     profile_defaults_TE:; write_defaults_for(TE)
