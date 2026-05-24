@@ -3569,8 +3569,18 @@ scope Toggles {
         jal     vs_options_pack_
         nop
 
+        // CAUTION: `li` is a *pseudo-instruction* that expands to two real
+        // ops (`lui` + `ori`). Putting it in a delay slot only places the
+        // `lui` half before the JAL — the `ori` runs AFTER SRAM.save_
+        // returns, so a0 is the high half only (e.g. 0x80460000) when the
+        // callee reads it. Earlier versions of this routine hit exactly
+        // that trap: SRAM.save_ then read its struct from 0x80460000,
+        // producing a wild SRAM destination + huge size and ballooning
+        // the save file from 32KB to 64KB. Always materialize a0 BEFORE
+        // the JAL and use a nop in the delay slot.
+        li      a0, block_vs_options                // a0 = block header
         jal     SRAM.save_
-        li      a0, block_vs_options                // delay slot — block header
+        nop
 
         jal     SRAM.mark_saved_                    // ensure the load path runs next boot
         nop
