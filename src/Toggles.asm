@@ -2467,7 +2467,13 @@ scope Toggles {
     // Pressure Window stores 0..4 ⇒ "5".."30". The actual threshold (in
     // frames) is looked up in ComboPressure.threshold_frames_table so the
     // labels stay independent of the gameplay tuning.
-    entry_pressure_window:;             entry("Pressure Window", Menu.type.INT, 1, 1, 1, 1, 0, 4, OS.NULL, string_table_pressure_window, OS.NULL, OS.NULL)
+    entry_pressure_window:;             entry("Pressure Window", Menu.type.INT, 1, 1, 1, 1, 0, 4, OS.NULL, string_table_pressure_window, OS.NULL, entry_combo_pressure_sound)
+    // Audio cue + on-screen HUD sub-toggles for Combo Pressure. Both
+    // default ON so the flagship feature is "loud and visible" by default;
+    // either can be flipped off independently for a quieter / cleaner
+    // experience without disabling the gameplay mechanic itself.
+    entry_combo_pressure_sound:;        entry_bool("Combo Pressure SFX", OS.TRUE, OS.TRUE, OS.TRUE, OS.TRUE, entry_combo_pressure_display)
+    entry_combo_pressure_display:;      entry_bool("Combo Pressure HUD", OS.TRUE, OS.TRUE, OS.TRUE, OS.TRUE, OS.NULL)
 
 
     evaluate num_gameplay_toggles(num_toggles - {num_remix_toggles})
