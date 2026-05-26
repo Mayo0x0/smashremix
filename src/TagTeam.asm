@@ -1567,6 +1567,15 @@ scope TagTeam {
         bne     t0, t1, _end
         nop
 
+        // ── Reserve-heal sidecar ────────────────────────────────────────────
+        // Drive the Tag Team Heal feature off the same per-frame routine.
+        // Placed BEFORE the manual-swap toggle gate so users can enable Heal
+        // independently of L+Z Swap. apply_stock_heal_tick_ does its own
+        // gating (toggle, game_status, tick cadence), so calling it here is
+        // cheap on the no-op path.
+        jal     apply_stock_heal_tick_
+        nop
+
         // Bail out if the user disabled manual swapping in the Gameplay toggles.
         // The toggle is read each frame so it picks up changes mid-match (e.g. for
         // testing); the cost is one extra load + branch per port iteration.
@@ -2102,6 +2111,111 @@ scope TagTeam {
         lw      s2, 0x0010(sp)              // restore caller s2
         jr      ra
         addiu   sp, sp, 0x0040              // deallocate (delay slot)
+    }
+
+    // @ Description
+    // Tag Team "Reserve Heal" tick. Runs once per frame as a sidecar to
+    // check_swap_input_'s GObj routine. On every Nth frame it nudges the
+    // saved damage of every reserve (benched) character down by the user-
+    // configured rate so they slowly regenerate while waiting for their tag.
+    //
+    // The active player is naturally excluded: saved_damage[] only tracks
+    // *reserve* HP — the active char's live percent lives in
+    // player_struct.0x002C and is never touched by this routine.
+    //
+    // Toggles consulted (both in Toggles.asm):
+    //   entry_tag_team_heal       — master on/off (default OFF)
+    //   entry_tag_team_heal_rate  — 0..4 ⇒ "1".."5" % per tick (default 2%)
+    //
+    // Cadence: every 128 match-timer frames (~2.13s @ 60Hz), matching the
+    // PoisonDmg "every two seconds" rhythm so the two systems feel
+    // consistent to the player.
+    //
+    // No arguments / no return value. Stack-safe (saves all registers it
+    // touches). The function is a no-op outside of an actively-running
+    // Tag Team match.
+    scope apply_stock_heal_tick_: {
+        addiu   sp, sp, -0x0020
+        sw      ra, 0x0004(sp)
+        sw      t0, 0x0008(sp)
+        sw      t1, 0x000C(sp)
+        sw      t2, 0x0010(sp)
+        sw      t3, 0x0014(sp)
+        sw      t4, 0x0018(sp)
+
+        // ── Toggle gate: feature enabled? ────────────────────────────────────
+        Toggles.read(entry_tag_team_heal, t0)
+        beqz    t0, _end                    // OFF → no-op
+        nop
+
+        // ── Game status: only tick during an actively-running match ─────────
+        // 0=wait, 1=ongoing, 2=paused, 3=unpausing, 5=match end, 7=reset.
+        // Skipping non-ongoing avoids healing during pause / end-screens.
+        OS.read_byte(Global.vs.game_status, t0)
+        lli     t1, 0x0001
+        bne     t0, t1, _end
+        nop
+
+        // ── Tick gate: only every 128 frames (~2s) of elapsed match time ───
+        // We use the *exact same* elapsed-time source as
+        // CharacterSelectDebugMenu.PoisonDmg.apply_damage so the two systems
+        // are in lockstep cadence. Reading 0x801313F8 directly (as Poison.asm
+        // does) did not produce a stable tick in Tag Team matches during
+        // testing — the player would tag out at 13% damage, sit on the bench
+        // for 10 seconds and come back at 13%. Global.match_info+0x18 is the
+        // elapsed-time word that the engine actively ticks every frame of
+        // every match (1P, VS, Tag Team), so the gate fires reliably.
+        li      t0, Global.match_info       // t0 = &match_info_ptr (= 0x800A50E8)
+        lw      t0, 0x0000(t0)              // t0 = match_info struct pointer
+        beqz    t0, _end                    // no match active → skip
+        nop
+        lw      t0, 0x0018(t0)              // t0 = elapsed time (word)
+        beqz    t0, _end                    // frame 0 → skip (also covers pre-match)
+        nop
+        andi    t0, t0, 0x007F              // every 128 frames (~2.13s @ 60Hz)
+        bnez    t0, _end                    // not a tick frame → skip
+        nop
+
+        // ── Read heal rate (0..4) and convert to actual percent (1..5) ─────
+        Toggles.read(entry_tag_team_heal_rate, t0)
+        addiu   t0, t0, 0x0001               // t0 = heal amount in % (1..5)
+
+        // ── Heal every saved_damage entry, clamped at 0 ─────────────────────
+        // Layout: 4 ports * 6 slots * 4 bytes = 96 bytes (24 word entries).
+        // We iterate all 24 because:
+        //   • Unused ports (CPU/NA) sit at 0 — beqz skips them (saves a write)
+        //   • Dead-stock slots are inert (the char won't be tagged back in)
+        //   • The active char's HP is in player_struct.0x002C, not here, so
+        //     the active player is automatically excluded.
+        li      t1, saved_damage
+        lli     t2, 24                       // entries remaining
+
+        _heal_loop:
+        lw      t3, 0x0000(t1)               // t3 = current saved damage
+        beqz    t3, _heal_next               // already 0 → skip; avoids underflow
+        subu    t4, t3, t0                   // t4 = damage - heal_amount (delay slot is OK here, t4 only read on next instr)
+        bgez    t4, _heal_store              // result still >= 0 → store as-is
+        nop
+        or      t4, r0, r0                   // else clamp at 0
+
+        _heal_store:
+        sw      t4, 0x0000(t1)
+
+        _heal_next:
+        addiu   t1, t1, 0x0004
+        addiu   t2, t2, -0x0001
+        bnez    t2, _heal_loop
+        nop
+
+        _end:
+        lw      ra, 0x0004(sp)
+        lw      t0, 0x0008(sp)
+        lw      t1, 0x000C(sp)
+        lw      t2, 0x0010(sp)
+        lw      t3, 0x0014(sp)
+        lw      t4, 0x0018(sp)
+        jr      ra
+        addiu   sp, sp, 0x0020
     }
 
     // @ Description
