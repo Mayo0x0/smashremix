@@ -1577,6 +1577,11 @@ scope Item {
         jal     Poison.clear_poison_
         nop
 
+        // [Smash Remix] Reset Combo Pressure per-port state arrays so the
+        // gate starts from a clean slate at the top of every match.
+        jal     ComboPressure.clear_state_
+        nop
+
         lw      ra, 0x0004(sp)                      // restore ra
         jr      ra
         addiu   sp, sp, 0x0030                      // deallocate stack space

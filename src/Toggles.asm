@@ -1553,7 +1553,23 @@ scope Toggles {
     num_8:; db "8", 0x00
     num_9:; db "9", 0x00
     num_10:; db "10", 0x00
+    // Pressure Window labels (Combo Pressure feature). Shared with any
+    // future toggle that wants 15/20/30-second granularity.
+    num_15:; db "15", 0x00
+    num_20:; db "20", 0x00
+    num_30:; db "30", 0x00
     OS.align(4)
+
+    // @ Description
+    // Pressure Window string table — index 0..4 ⇒ 5 / 10 / 15 / 20 / 30
+    // seconds. ComboPressure.threshold_frames_table holds the matching
+    // frame counts for each index.
+    string_table_pressure_window:
+    dw num_5
+    dw num_10
+    dw num_15
+    dw num_20
+    dw num_30
 
     string_table_cpu_levels:
     dw default
@@ -2446,7 +2462,12 @@ scope Toggles {
     entry_single_button_mode:;          entry("Single Button Mode", Menu.type.INT, 0, 0, 0, 0, 0, 6, OS.NULL, string_table_single_button_mode, OS.NULL, entry_item_dropping)
     entry_item_dropping:;               entry_bool("All Items R Drop (Aerial)", OS.FALSE, OS.FALSE, OS.FALSE, OS.FALSE, entry_move_staling)
     entry_move_staling:;                entry("Move Staling", Menu.type.INT, 0, 0, 0, 0, 0, 6, OS.NULL, string_table_move_staling, OS.NULL, entry_stopwatch_behaviour)
-    entry_stopwatch_behaviour:;         entry("Stopwatch Item", Menu.type.INT, 0, 0, 0, 0, 0, 4, OS.NULL, string_table_stopwatch_item, OS.NULL, OS.NULL)
+    entry_stopwatch_behaviour:;         entry("Stopwatch Item", Menu.type.INT, 0, 0, 0, 0, 0, 4, OS.NULL, string_table_stopwatch_item, OS.NULL, entry_combo_pressure)
+    entry_combo_pressure:;              entry_bool("Combo Pressure", OS.FALSE, OS.FALSE, OS.FALSE, OS.FALSE, entry_pressure_window)
+    // Pressure Window stores 0..4 ⇒ "5".."30". The actual threshold (in
+    // frames) is looked up in ComboPressure.threshold_frames_table so the
+    // labels stay independent of the gameplay tuning.
+    entry_pressure_window:;             entry("Pressure Window", Menu.type.INT, 1, 1, 1, 1, 0, 4, OS.NULL, string_table_pressure_window, OS.NULL, OS.NULL)
 
 
     evaluate num_gameplay_toggles(num_toggles - {num_remix_toggles})

@@ -39,6 +39,32 @@ scope Poison {
         _return:
         OS.patch_end()
 
+        // [Smash Remix] Drive the Combo Pressure feature off this hook.
+        // poison_hook runs once per player per frame as part of the engine's
+        // heal/damage pipeline — perfect cadence for tracking "frames since
+        // last damage take" and snapping percent back to 0 once the Pressure
+        // Window has elapsed without a fresh hit. apply_pressure_tick_ takes
+        // a2 = player struct and does its own toggle / screen / Stamina-mode
+        // gating so the no-op path is cheap.
+        //
+        // We open a fresh local stack frame here because poison_hook itself
+        // doesn't have one — the game code that called us at 0x800E1820 owns
+        // sp, and the surrounding poison code below issues several jal's of
+        // its own (so ra is volatile across the whole hook anyway). v1 holds
+        // the heal-flag dispatch value used by the very next branch, so we
+        // explicitly save/restore it; a2 is the player struct that the
+        // post-hook game code reads.
+        addiu   sp, sp, -0x0020
+        sw      ra, 0x0004(sp)
+        sw      a2, 0x0008(sp)
+        sw      v1, 0x000C(sp)
+        jal     ComboPressure.apply_pressure_tick_
+        nop
+        lw      ra, 0x0004(sp)
+        lw      a2, 0x0008(sp)
+        lw      v1, 0x000C(sp)
+        addiu   sp, sp, 0x0020
+
         beqzl   v1, _skip_heal
         lw      v0, 0x084C(a2)          // v0 = healing amount
 
