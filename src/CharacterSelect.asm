@@ -600,11 +600,11 @@ scope CharacterSelect {
         bnel    t0, t1, _end                // If not BOSS, return variant ID
         addu    v0, r0, t1                  // v0 = variant ID
 
-        li      t0, CharacterSelectDebugMenu.PlayerTag.string_table + (20 * 4)
-        lw      t0, 0x0000(t0)              // t0 = 20th tag
-        lbu     t0, 0x0000(t0)              // t0 = first character
-        bnezl   t0, _end                    // if not blank, return variant ID
-        addu    v0, r0, t1                  // v0 = variant ID
+        // BOSS (Master Hand) is gated behind the "Master Hand (LINK variant)"
+        // toggle so casual matches don't accidentally expose it on the CSS.
+        Toggles.read(entry_master_hand_link, t0)
+        bnezl   t0, _end                    // toggle ON → return variant ID
+        addu    v0, r0, t1                  // v0 = variant ID (delay slot)
 
         _end:
         lw      t0, 0x0004(sp)              // ~
@@ -1289,10 +1289,10 @@ scope CharacterSelect {
         bnel    a0, v0, _check_recent_randoms // valid variant if not Master Hand
         addu    v0, r0, a0                    // v0 = character id (variant)
 
-        li      v1, CharacterSelectDebugMenu.PlayerTag.string_table + (20 * 4)
-        lw      v1, 0x0000(v1)              // v1 = 20th tag
-        lbu     v1, 0x0000(v1)              // v1 = first character
-        beqzl   v1, _check_recent_randoms   // if blank, not a valid variant
+        // BOSS only counts as a valid variant when the toggle is enabled —
+        // otherwise fall through to "use original character".
+        Toggles.read(entry_master_hand_link, v1)
+        beqzl   v1, _check_recent_randoms   // toggle OFF → not a valid variant
         srl     v0, s0, 0x0002              // v0 = character id (not a variant)
 
         addu    v0, r0, a0                  // v0 = character id (variant)
@@ -5181,10 +5181,10 @@ scope CharacterSelect {
         bne     a1, t2, _gdk                // If not Master Hand, then skip... otherwise, draw Master Hand stock icon
         addiu   a1, at, VARIANT_ICON_OFFSET.MASTER_HAND // a1 = Master Hand footer struct
 
-        li      t1, CharacterSelectDebugMenu.PlayerTag.string_table + (20 * 4)
-        lw      t1, 0x0000(t1)              // t1 = 20th tag
-        lbu     t1, 0x0000(t1)              // t1 = first character
-        beqz    t1, _end                    // if blank, skip
+        // Stock-icon draw is also gated by the Master Hand toggle so an
+        // accidentally-cached BOSS variant doesn't leak into the HUD.
+        Toggles.read(entry_master_hand_link, t1)
+        beqz    t1, _end                    // toggle OFF → skip drawing the icon
         nop
         b       _draw_icon
         nop
