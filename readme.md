@@ -1,3 +1,62 @@
+# Fork!
+
+This fork extends Smash Remix with four feature sets that live entirely
+behind toggles in **Options → Gameplay**, so the upstream balance is
+unchanged unless you opt in.
+
+## Tag Team mode upgrades
+
+- **Tag Team L+Z Swap** *(default: ON)* — hold L+Z for ~30 frames to
+  swap the active fighter without burning a stock. Position, facing,
+  damage %, held items, B-special charge state, and Kirby's copied
+  power (with the matching hat) all carry over.
+- **Tag Team Heal** *(default: OFF)* — characters waiting on the bench
+  slowly regenerate damage so a beat-up reserve isn't a permanent
+  liability. Heal rate is configurable from 1 % to 5 % per ~2 s tick
+  via **Tag Team Heal Rate**.
+
+## Master Hand as a LINK variant
+
+- **Master Hand (LINK variant)** *(default: OFF)* — hover over LINK on
+  the CSS, press the variant button, and Master Hand becomes
+  selectable. Fully playable: portrait, name texture, stock icon and
+  zoom-in animation are already wired up; the toggle just removes the
+  hidden Player-Tag gate that previously locked it.
+
+## Custom Profile + persistent VS Options
+
+- **Custom Profile** — a fifth profile slot alongside CE / TE / NE /
+  JP that you can name yourself (default "CustomProfil", fully
+  renameable in the menu) and save your entire toggle setup to. Hit
+  **Save Custom Profile** in the Super Menu, soft-reset later, and
+  loading the profile restores every toggle exactly.
+- **VS Mode match settings now persist** — Handicap, Team Attack,
+  Stage Select, Damage, Item Switch / Item Frequency, Time and Stocks
+  all survive a power-cycle. Previously, `Settings.set_vs_settings_`
+  re-applied Tournament defaults on every boot.
+- VS settings are also captured by the Custom Profile snapshot, so
+  loading a profile fully restores both toggles and match rules.
+
+## Combo Pressure ("use it or lose it")
+
+- **Combo Pressure** *(default: OFF)* — a player whose damage hasn't
+  been bumped for the configured **Pressure Window** has their percent
+  snapped back to 0 %. Keeps matches aggressive: as long as you chain
+  hits, the opponent stays parked; let them breathe too long, and
+  every hit you landed evaporates.
+- **Pressure Window** — 5 / 10 / 15 / 20 / 30 seconds (default 10 s).
+- **Combo Pressure SFX** *(default: ON)* — plays the P-Wing
+  "powerup expired" cue on each reset.
+- **Combo Pressure HUD** *(default: ON)* — top-left corner shows a
+  two-digit per-player countdown (e.g. `P1:09 P2:21`), in canonical
+  player colors with white digits. Only active ports are shown — a
+  1-v-1 displays just P1 + P2.
+
+Skipped automatically in Stamina mode (resetting HP would effectively
+revive the player). All five settings ride along in the Custom Profile
+snapshot.
+
+
 # Smash Remix
 *A Super Smash Bros. 64 Mod Organized by The_Smashfather*
 
