@@ -2314,6 +2314,8 @@ scope Render {
         nop
         jal     ZCancel.setup_
         nop
+        jal     ComboPressure.setup_timer_display_ // Combo Pressure timer overlay (VS only — the gating in apply_pressure_tick_ also requires current_screen == 0x16)
+        nop
 
         b       _end
         nop

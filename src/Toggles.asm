@@ -1555,7 +1555,23 @@ scope Toggles {
     num_8:; db "8", 0x00
     num_9:; db "9", 0x00
     num_10:; db "10", 0x00
+    // Pressure Window labels (Combo Pressure feature). Shared with any
+    // future toggle that wants 15/20/30-second granularity.
+    num_15:; db "15", 0x00
+    num_20:; db "20", 0x00
+    num_30:; db "30", 0x00
     OS.align(4)
+
+    // @ Description
+    // Pressure Window string table — index 0..4 ⇒ 5 / 10 / 15 / 20 / 30
+    // seconds. ComboPressure.threshold_frames_table holds the matching
+    // frame counts for each index.
+    string_table_pressure_window:
+    dw num_5
+    dw num_10
+    dw num_15
+    dw num_20
+    dw num_30
 
     string_table_cpu_levels:
     dw default
@@ -2469,7 +2485,18 @@ scope Toggles {
     // Heal Rate stores the array index into string_table_tag_team_heal_rate
     // (0..4 ⇒ "1".."5"). TagTeam.apply_stock_heal_tick_ converts the stored
     // value to the actual percent by adding 1, so the UI shows the % directly.
-    entry_tag_team_heal_rate:;          entry("Tag Team Heal Rate", Menu.type.INT, 1, 1, 1, 1, 0, 4, OS.NULL, string_table_tag_team_heal_rate, OS.NULL, OS.NULL)
+    entry_tag_team_heal_rate:;          entry("Tag Team Heal Rate", Menu.type.INT, 1, 1, 1, 1, 0, 4, OS.NULL, string_table_tag_team_heal_rate, OS.NULL, entry_combo_pressure)
+    entry_combo_pressure:;              entry_bool("Combo Pressure", OS.FALSE, OS.FALSE, OS.FALSE, OS.FALSE, entry_pressure_window)
+    // Pressure Window stores 0..4 ⇒ "5".."30". The actual threshold (in
+    // frames) is looked up in ComboPressure.threshold_frames_table so the
+    // labels stay independent of the gameplay tuning.
+    entry_pressure_window:;             entry("Pressure Window", Menu.type.INT, 1, 1, 1, 1, 0, 4, OS.NULL, string_table_pressure_window, OS.NULL, entry_combo_pressure_sound)
+    // Audio cue + on-screen HUD sub-toggles for Combo Pressure. Both
+    // default ON so the flagship feature is "loud and visible" by default;
+    // either can be flipped off independently for a quieter / cleaner
+    // experience without disabling the gameplay mechanic itself.
+    entry_combo_pressure_sound:;        entry_bool("Combo Pressure SFX", OS.TRUE, OS.TRUE, OS.TRUE, OS.TRUE, entry_combo_pressure_display)
+    entry_combo_pressure_display:;      entry_bool("Combo Pressure HUD", OS.TRUE, OS.TRUE, OS.TRUE, OS.TRUE, OS.NULL)
 
 
     evaluate num_gameplay_toggles(num_toggles - {num_remix_toggles})
