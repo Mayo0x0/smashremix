@@ -1717,6 +1717,18 @@ scope Toggles {
     dw sw_backfire_no
 
     // @ Description
+    // Tag Team Heal Rate strings — value-to-label mapping. The toggle stores
+    // the array index (0..4); apply_stock_heal_tick_ adds 1 to derive the
+    // actual heal percent. Reuses num_1..num_5 defined above to avoid
+    // duplicating the digit glyphs.
+    string_table_tag_team_heal_rate:
+    dw num_1
+    dw num_2
+    dw num_3
+    dw num_4
+    dw num_5
+
+    // @ Description
     // BGM/SFX Volume strings
     num_0:; db "0", 0x00
     OS.align(4)
@@ -2446,7 +2458,13 @@ scope Toggles {
     entry_single_button_mode:;          entry("Single Button Mode", Menu.type.INT, 0, 0, 0, 0, 0, 6, OS.NULL, string_table_single_button_mode, OS.NULL, entry_item_dropping)
     entry_item_dropping:;               entry_bool("All Items R Drop (Aerial)", OS.FALSE, OS.FALSE, OS.FALSE, OS.FALSE, entry_move_staling)
     entry_move_staling:;                entry("Move Staling", Menu.type.INT, 0, 0, 0, 0, 0, 6, OS.NULL, string_table_move_staling, OS.NULL, entry_stopwatch_behaviour)
-    entry_stopwatch_behaviour:;         entry("Stopwatch Item", Menu.type.INT, 0, 0, 0, 0, 0, 4, OS.NULL, string_table_stopwatch_item, OS.NULL, OS.NULL)
+    entry_stopwatch_behaviour:;         entry("Stopwatch Item", Menu.type.INT, 0, 0, 0, 0, 0, 4, OS.NULL, string_table_stopwatch_item, OS.NULL, entry_tag_team_manual_swap)
+    entry_tag_team_manual_swap:;        entry_bool("Tag Team L+Z Swap", OS.TRUE, OS.TRUE, OS.TRUE, OS.TRUE, entry_tag_team_heal)
+    entry_tag_team_heal:;               entry_bool("Tag Team Heal", OS.FALSE, OS.FALSE, OS.FALSE, OS.FALSE, entry_tag_team_heal_rate)
+    // Heal Rate stores the array index into string_table_tag_team_heal_rate
+    // (0..4 ⇒ "1".."5"). TagTeam.apply_stock_heal_tick_ converts the stored
+    // value to the actual percent by adding 1, so the UI shows the % directly.
+    entry_tag_team_heal_rate:;          entry("Tag Team Heal Rate", Menu.type.INT, 1, 1, 1, 1, 0, 4, OS.NULL, string_table_tag_team_heal_rate, OS.NULL, OS.NULL)
 
 
     evaluate num_gameplay_toggles(num_toggles - {num_remix_toggles})
