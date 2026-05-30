@@ -64,6 +64,75 @@ Skipped automatically in Stamina mode (resetting HP would effectively
 revive the player). All five settings ride along in the Custom Profile
 snapshot.
 
+## How to build the ROM yourself
+
+### Prerequisites
+- Windows (the build scripts are `.bat` files)
+- A **legally obtained Super Smash Bros. 64 ROM** (NTSC-U is
+  recommended — if you have a PAL copy, use the PAL build in
+  Step 4)
+
+### Step 1 — Download the fork
+Go to [github.com/Mayo0x0/smashremix](https://github.com/Mayo0x0/smashremix),
+click the green **`< > Code`** button in the top right →
+**Download ZIP** → unzip somewhere (e.g. `C:\smashremix`).
+
+If you have Git installed, you can also clone it:
+\`\`\`
+git clone https://github.com/Mayo0x0/smashremix.git
+\`\`\`
+
+### Step 2 — Place your original ROM
+Put your SSB64 ROM into the `roms\` folder and rename it to
+**`ssb.rom`** (exactly that — no `.z64` or `.n64` extension, just
+`ssb.rom`).
+
+The path should look like this in the end:
+\`\`\`
+smashremix\roms\ssb.rom
+\`\`\`
+
+### Step 3 — Apply the original patch
+Double-click **`xdelta - apply original.bat`** in the main folder.
+This converts your `ssb.rom` into a `roms\original.z64` with the
+layout the build expects.
+
+A black console window will pop up briefly and close again —
+afterwards `roms\original.z64` will exist.
+
+### Step 4 — Build the Smash Remix fork
+- **NTSC:** double-click `patch.bat`
+- **PAL:** double-click `patch-pal.bat`
+
+The script runs for about 30–60 seconds (assembler + checksum +
+CRC). When it's done, you'll find **`ssb64asm.z64`** in the main
+folder — that's your playable ROM.
+
+### Step 5 — Play
+Load `ssb64asm.z64` in your favourite N64 emulator (Project64,
+RMG-K, Mupen64Plus, …).
+
+> 💡 **RMG-K tip:** make sure the Save Type is set to **"32 KB SRAM"**,
+> otherwise the game won't persist any toggles, the Custom Profile,
+> or the VS Options.
+
+### Where to find the new features
+All fork features are togglable under **Options → Gameplay**:
+- `Tag Team L+Z Swap` (ON) / `Tag Team Heal` (OFF) / `Heal Rate`
+- `Master Hand (LINK variant)` (OFF) — appears as a LINK variant
+  on the Character Select Screen
+- `Combo Pressure` (OFF) + `Pressure Window` + `SFX` (ON) + `HUD` (ON)
+
+And in the Super Menu: **Save Custom Profile** + a renameable
+`CustomProfil` slot.
+
+
+
+
+
+
+
+
 
 # Smash Remix
 *A Super Smash Bros. 64 Mod Organized by The_Smashfather*
