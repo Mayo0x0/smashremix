@@ -7,6 +7,10 @@ unchanged unless you opt in.
 <img width="302" height="224" alt="Screenshot6" src="https://github.com/user-attachments/assets/c67001af-18d4-411f-92ac-199ce5b07bfe" />
 <img width="297" height="225" alt="Screenshot7" src="https://github.com/user-attachments/assets/1b4796a4-6b10-460d-bc74-2e41b02d0794" />
 <img width="304" height="227" alt="Screenshot8" src="https://github.com/user-attachments/assets/bcc47c45-bbc3-4c41-878a-74f8e95748e0" />
+<img width="319" height="239" alt="Screenshot1" src="https://github.com/user-attachments/assets/5690938b-0526-4f58-aee6-e9e586b51b79" />
+<img width="318" height="239" alt="Screenshot2" src="https://github.com/user-attachments/assets/17ecd05c-d3ea-403d-be07-f1c212b426c9" />
+<img width="321" height="239" alt="Screenshot3" src="https://github.com/user-attachments/assets/859c0ffa-a133-4bce-bddd-4b9b321a1efe" />
+<img width="448" height="242" alt="Screenshot5" src="https://github.com/user-attachments/assets/73073a07-c5cf-4edd-9add-e20784abbe27" />
 
 ## Tag Team mode upgrades
 
