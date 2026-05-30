@@ -1105,7 +1105,8 @@ scope Toggles {
         constant TE(1)
         constant NE(2)
         constant JP(3)
-        constant CUSTOM(4)
+        constant CUSTOM_USER(4)             // user-saved profile (block_custom_*)
+        constant CUSTOM(5)                  // "doesn't match anything" fallback label
     }
 
     // @ Description
@@ -1140,7 +1141,8 @@ scope Toggles {
     dw profile_te
     dw profile_ne
     dw profile_jp
-    dw profile_custom
+    dw entry_custom_profile_name + 0x0028   // live input buffer (user-renameable)
+    dw profile_custom                       // fallback shown when no profile matches
 
     // @ Description
     // Shieldstun strings
@@ -2376,7 +2378,9 @@ scope Toggles {
     // @ Description
     // Contains list of submenus.
     head_super_menu:
-    Menu.entry("Load Profile:", Menu.type.INT, OS.FALSE, 0, 3, load_profile_, OS.NULL, string_table_profile, OS.NULL, entry_remix_settings)
+    Menu.entry("Load Profile:", Menu.type.INT, OS.FALSE, 0, 4, load_profile_, OS.NULL, string_table_profile, OS.NULL, entry_save_custom_profile)
+    entry_save_custom_profile:; Menu.entry_title("Save Custom Profile", custom_save_, entry_custom_profile_name)
+    entry_custom_profile_name:; Menu.entry_input(toggle_edit_mode_, 0, entry_remix_settings)
     entry_remix_settings:; Menu.entry_title("Remix Settings", show_remix_settings_, entry_gameplay_settings)
     entry_gameplay_settings:; Menu.entry_title("Gameplay Settings", show_gameplay_settings_, entry_music_settings)
     entry_music_settings:; Menu.entry_title("Music Settings", show_music_settings_, entry_stage_settings)
@@ -2880,6 +2884,44 @@ scope Toggles {
     OS.align(16)
     block_tags:; SRAM.block({MAX_TAGS} * 20) // 20 characters per tag
 
+    // @ Description
+    // SRAM blocks for the user-saved Custom Profile. Mirror the same per-head
+    // layout used by block_remix/gameplay/music/stages/pokemon so the existing
+    // Menu.export_ / Menu.import_ helpers can be reused without modification.
+    // The info block holds a magic word so we can detect "no profile saved yet"
+    // on a fresh SRAM, and the name block stores the user-chosen 20-char name.
+    OS.align(16)
+    block_custom_info:; SRAM.block(8)
+    OS.align(16)
+    block_custom_remix:; SRAM.block((({remix_toggles_block_size} / 32) + 1) * 4)
+    OS.align(16)
+    block_custom_gameplay:; SRAM.block((({gameplay_toggles_block_size} / 32) + 1) * 4)
+    OS.align(16)
+    block_custom_music:; SRAM.block((({music_toggles_block_size} / 32) + 1) * 4)
+    OS.align(16)
+    block_custom_stages:; SRAM.block((({stage_toggles_block_size} / 32) + 1) * 4)
+    OS.align(16)
+    block_custom_pokemon:; SRAM.block((({pokemon_toggles_block_size} / 32) + 1) * 4)
+    OS.align(16)
+    block_custom_name:; SRAM.block(20)
+
+    // @ Description
+    // SRAM block that mirrors the Global.vs.* match settings (handicap, team
+    // attack, stage select, damage, item frequency, time, stocks) plus the two
+    // item-enabled bitmasks. Saved on every VS Mode menu exit, applied on top
+    // of the Tournament defaults in Settings.set_vs_settings_. A magic word in
+    // the first slot tells us whether the data is from a real save or just
+    // freshly-zeroed SRAM.
+    OS.align(16)
+    block_vs_options:; SRAM.block(32)
+
+    // Custom-Profile mirror — populated by custom_save_ from the live values
+    // and replayed back into the Global.vs.* addresses by custom_load_.
+    OS.align(16)
+    block_custom_vs_options:; SRAM.block(32)
+
+    constant VS_OPTIONS_MAGIC(0x564F5054)        // ASCII "VOPT"
+
     sram_block_table:
     dw block_remix
     dw block_gameplay
@@ -2887,8 +2929,53 @@ scope Toggles {
     dw block_stages
     dw block_pokemon
     dw block_tags
+    dw block_custom_info
+    dw block_custom_remix
+    dw block_custom_gameplay
+    dw block_custom_music
+    dw block_custom_stages
+    dw block_custom_pokemon
+    dw block_custom_name
+    dw block_vs_options
+    dw block_custom_vs_options
     dw 0 // leave blank to end
 
+    // Parallel head table for the per-head custom blocks (skips player_tags;
+    // tags shouldn't ride along with a profile snapshot).
+    custom_block_head_table:
+    dw head_remix_settings
+    dw head_gameplay_settings
+    dw head_music_settings
+    dw head_stage_settings
+    dw head_pokemon_settings
+    dw 0
+
+    // Parallel sram-block table aligned 1:1 with custom_block_head_table.
+    custom_sram_block_table:
+    dw block_custom_remix
+    dw block_custom_gameplay
+    dw block_custom_music
+    dw block_custom_stages
+    dw block_custom_pokemon
+    dw 0
+
+    // Magic word stored in block_custom_info to mark "this slot has been
+    // saved" so we can tell first-boot from a real saved profile.
+    constant CUSTOM_PROFILE_MAGIC(0x50524F46)   // ASCII "PROF"
+
+    // Default name copied into the name buffer on first boot.
+    custom_profile_default_name:; db "CustomProfil", 0
+    OS.align(4)
+
+    // @ Description
+    // Head pointers aligned 1:1 with sram_block_table. The first 6 entries are
+    // the heads Toggles.save_ walks during a normal menu-exit save. The 7 null
+    // entries after the first terminator correspond to block_custom_info/
+    // _remix/_gameplay/_music/_stages/_pokemon/_name in sram_block_table.
+    // Without them, Toggles.load_ would keep iterating past this table while
+    // looking up a head for each custom block, read garbage as the head
+    // pointer, and crash Menu.import_ when it tried to follow the bogus
+    // linked list. The trailing 0 is the real list terminator.
     block_head_table:
     dw head_remix_settings
     dw head_gameplay_settings
@@ -2896,7 +2983,16 @@ scope Toggles {
     dw head_stage_settings
     dw head_pokemon_settings
     dw head_player_tags
-    dw 0 // leave blank for last
+    dw 0 // block_custom_info  — no head; load_ must see a null here
+    dw 0 // block_custom_remix
+    dw 0 // block_custom_gameplay
+    dw 0 // block_custom_music
+    dw 0 // block_custom_stages
+    dw 0 // block_custom_pokemon
+    dw 0 // block_custom_name
+    dw 0 // block_vs_options          — handled by vs_options_load_
+    dw 0 // block_custom_vs_options   — handled by custom_load_
+    dw 0 // real list terminator
 
     profile_defaults_CE:; write_defaults_for(CE)
     profile_defaults_TE:; write_defaults_for(TE)
@@ -3116,6 +3212,13 @@ scope Toggles {
 
         li      t0, head_super_menu            // t0 = address of menu entry
         lw      t0, 0x0004(t0)                 // t0 = selected profile
+
+        // Custom user-saved profile lives outside the static `profiles` table —
+        // hand it off to custom_load_ which pulls values out of block_custom_*.
+        lli     t1, profile.CUSTOM_USER
+        beq     t0, t1, _do_custom_user_load
+        nop
+
         li      t1, profiles
         sll     t2, t0, 0x0002                 // t2 = offset to profile defaults
         addu    t1, t1, t2                     // t1 = address of profile defaults
@@ -3156,6 +3259,13 @@ scope Toggles {
         bnez    t0, _begin                     // if more blocks, do loop
         nop                                    // ~
 
+        b       _end
+        nop
+
+        _do_custom_user_load:
+        jal     custom_load_
+        nop
+
         _end:
         lw      ra, 0x0004(sp)                 // ~
         lw      t0, 0x0008(sp)                 // ~
@@ -3166,6 +3276,357 @@ scope Toggles {
         addiu   sp, sp, 0x0020                 // deallocate stack sapce
         jr      ra                             // return
         nop
+    }
+
+    // @ Description
+    // Saves the current toggle values into block_custom_* and flushes them to
+    // SRAM. Also imprints CUSTOM_PROFILE_MAGIC into block_custom_info so the
+    // load side knows a real profile lives here (not just zeroed SRAM).
+    // The 20-char name buffer is copied from the live INPUT entry into
+    // block_custom_name's RAM mirror, then persisted with the rest.
+    scope custom_save_: {
+        addiu   sp, sp, -0x0020
+        sw      ra, 0x0004(sp)
+        sw      t0, 0x0008(sp)
+        sw      t1, 0x000C(sp)
+        sw      t2, 0x0010(sp)
+        sw      a0, 0x0014(sp)
+        sw      a1, 0x0018(sp)
+
+        // ── Step 1: Export each head's live values into its custom block. ──
+        lli     t0, 0                         // t0 = table offset
+
+        _export_loop:
+        sw      t0, 0x001C(sp)
+        li      a0, custom_block_head_table
+        addu    a0, a0, t0
+        lw      a0, 0x0000(a0)                // a0 = head pointer
+        beqz    a0, _export_done              // 0 = end of list
+        li      a1, custom_sram_block_table
+        addu    a1, a1, t0
+        jal     Menu.export_
+        lw      a1, 0x0000(a1)                // a1 = block (delay slot)
+
+        lw      t0, 0x001C(sp)
+        b       _export_loop
+        addiu   t0, t0, 0x0004
+
+        _export_done:
+        // ── Step 2: Copy the live name from the INPUT entry into block_custom_name's RAM mirror.
+        li      t1, entry_custom_profile_name + 0x0028
+        li      t2, block_custom_name + 0x0010
+        lw      t0, 0x0000(t1); sw      t0, 0x0000(t2)
+        lw      t0, 0x0004(t1); sw      t0, 0x0004(t2)
+        lw      t0, 0x0008(t1); sw      t0, 0x0008(t2)
+        lw      t0, 0x000C(t1); sw      t0, 0x000C(t2)
+        lw      t0, 0x0010(t1); sw      t0, 0x0010(t2)
+
+        // ── Step 3: Stamp the "has saved" magic into block_custom_info ──
+        li      t1, block_custom_info + 0x0010
+        li      t0, CUSTOM_PROFILE_MAGIC
+        sw      t0, 0x0000(t1)
+        sw      r0, 0x0004(t1)                // reserved second word
+
+        // ── Step 4: Flush every custom block to SRAM ──────────────────────
+        li      a0, block_custom_info
+        jal     SRAM.save_
+        nop
+        li      a0, block_custom_remix
+        jal     SRAM.save_
+        nop
+        li      a0, block_custom_gameplay
+        jal     SRAM.save_
+        nop
+        li      a0, block_custom_music
+        jal     SRAM.save_
+        nop
+        li      a0, block_custom_stages
+        jal     SRAM.save_
+        nop
+        li      a0, block_custom_pokemon
+        jal     SRAM.save_
+        nop
+        li      a0, block_custom_name
+        jal     SRAM.save_
+        nop
+
+        // ── Step 5: Snapshot live VS options into block_custom_vs_options
+        // so the Custom Profile remembers them alongside the toggle state.
+        li      a0, block_custom_vs_options + 0x0010
+        jal     vs_options_pack_
+        nop
+        li      a0, block_custom_vs_options
+        jal     SRAM.save_
+        nop
+
+        // Belt-and-braces: ensure has_saved is set so the next boot's
+        // check_saved_ takes the load path instead of running SRAM.initialize_
+        // and wiping the data we just wrote.
+        jal     SRAM.mark_saved_
+        nop
+
+        lw      ra, 0x0004(sp)
+        lw      t0, 0x0008(sp)
+        lw      t1, 0x000C(sp)
+        lw      t2, 0x0010(sp)
+        lw      a0, 0x0014(sp)
+        lw      a1, 0x0018(sp)
+        jr      ra
+        addiu   sp, sp, 0x0020
+    }
+
+    // @ Description
+    // Imports the saved custom profile from block_custom_* into the live menu
+    // entries. Counterpart to load_profile_'s built-in path but pulling from
+    // SRAM blocks instead of a compile-time defaults array.
+    scope custom_load_: {
+        addiu   sp, sp, -0x0020
+        sw      ra, 0x0004(sp)
+        sw      t0, 0x0008(sp)
+        sw      a0, 0x000C(sp)
+        sw      a1, 0x0010(sp)
+
+        lli     t0, 0                         // table offset
+
+        _loop:
+        sw      t0, 0x0014(sp)
+        li      a0, custom_block_head_table
+        addu    a0, a0, t0
+        lw      a0, 0x0000(a0)
+        beqz    a0, _done
+        li      a1, custom_sram_block_table
+        addu    a1, a1, t0
+        jal     Menu.import_
+        lw      a1, 0x0000(a1)                // (delay slot) a1 = block
+
+        lw      t0, 0x0014(sp)
+        b       _loop
+        addiu   t0, t0, 0x0004
+
+        _done:
+        // Replay the snapshot VS Mode settings into Global.vs.* alongside
+        // the toggle values. vs_options_unpack_ no-ops if the saved block
+        // lacks the magic (e.g. the profile was saved before this feature
+        // existed).
+        li      a0, block_custom_vs_options + 0x0010
+        jal     vs_options_unpack_
+        nop
+
+        lw      ra, 0x0004(sp)
+        lw      t0, 0x0008(sp)
+        lw      a0, 0x000C(sp)
+        lw      a1, 0x0010(sp)
+        jr      ra
+        addiu   sp, sp, 0x0020
+    }
+
+    // @ Description
+    // Initialises the live name input buffer at boot. Runs after SRAM.load_
+    // has populated block_custom_name. If the info block's magic word is
+    // present we trust the SRAM contents; otherwise we copy the compile-time
+    // default ("CustomProfil") into the input buffer so the menu has something
+    // sensible to show before the user ever saves a profile.
+    scope custom_init_: {
+        addiu   sp, sp, -0x0018
+        sw      ra, 0x0004(sp)
+        sw      t0, 0x0008(sp)
+        sw      t1, 0x000C(sp)
+        sw      t2, 0x0010(sp)
+
+        // Check magic — if not set, fall back to default name in ROM.
+        li      t0, block_custom_info + 0x0010
+        lw      t1, 0x0000(t0)
+        li      t2, CUSTOM_PROFILE_MAGIC
+        beq     t1, t2, _from_sram
+        nop
+
+        // Copy "CustomProfil\0" into both block_custom_name's RAM mirror and
+        // the input entry buffer. The string is 13 bytes incl. terminator —
+        // round up to 20 by zero-padding the rest.
+        li      t0, custom_profile_default_name
+        li      t1, entry_custom_profile_name + 0x0028
+        li      t2, block_custom_name + 0x0010
+        // First 16 bytes (4 words) cover the 13-byte name including null
+        lw      a0, 0x0000(t0); sw a0, 0x0000(t1); sw a0, 0x0000(t2)
+        lw      a0, 0x0004(t0); sw a0, 0x0004(t1); sw a0, 0x0004(t2)
+        lw      a0, 0x0008(t0); sw a0, 0x0008(t1); sw a0, 0x0008(t2)
+        lw      a0, 0x000C(t0); sw a0, 0x000C(t1); sw a0, 0x000C(t2)
+        // Final word zeroes the 17–20 tail
+        sw      r0, 0x0010(t1)
+        sw      r0, 0x0010(t2)
+        b       _end
+        nop
+
+        _from_sram:
+        // Real profile saved before — sync the input buffer to SRAM contents.
+        li      t1, block_custom_name + 0x0010
+        li      t2, entry_custom_profile_name + 0x0028
+        lw      t0, 0x0000(t1); sw t0, 0x0000(t2)
+        lw      t0, 0x0004(t1); sw t0, 0x0004(t2)
+        lw      t0, 0x0008(t1); sw t0, 0x0008(t2)
+        lw      t0, 0x000C(t1); sw t0, 0x000C(t2)
+        lw      t0, 0x0010(t1); sw t0, 0x0010(t2)
+
+        _end:
+        lw      ra, 0x0004(sp)
+        lw      t0, 0x0008(sp)
+        lw      t1, 0x000C(sp)
+        lw      t2, 0x0010(sp)
+        jr      ra
+        addiu   sp, sp, 0x0018
+    }
+
+    // @ Description
+    // Helper: packs the live VS Mode match settings into a 32-byte buffer.
+    // Used by both vs_options_save_ (normal SRAM persistence) and custom_save_
+    // (Custom Profile snapshot). The caller supplies a0 = buffer address (= a
+    // block's RAM data slot, i.e. block_X + 0x10). Layout matches
+    // vs_options_unpack_'s expectations 1:1.
+    // @ Arguments
+    // a0 - destination buffer (32 bytes)
+    scope vs_options_pack_: {
+        addiu   sp, sp, -0x0010
+        sw      t0, 0x0004(sp)
+        sw      t1, 0x0008(sp)
+        sw      t2, 0x000C(sp)
+
+        // +0x00: magic
+        li      t0, VS_OPTIONS_MAGIC
+        sw      t0, 0x0000(a0)
+
+        // +0x04..+0x0A: VS settings byte-packed
+        li      t1, Global.vs.handicap
+        lbu     t0, 0x0000(t1); sb t0, 0x0004(a0)
+        li      t1, Global.vs.team_attack
+        lbu     t0, 0x0000(t1); sb t0, 0x0005(a0)
+        li      t1, Global.vs.stage_select
+        lbu     t0, 0x0000(t1); sb t0, 0x0006(a0)
+        li      t1, Global.vs.damage
+        lbu     t0, 0x0000(t1); sb t0, 0x0007(a0)
+        li      t1, Global.vs.item_frequency
+        lbu     t0, 0x0000(t1); sb t0, 0x0008(a0)
+        li      t1, Global.vs.time
+        lbu     t0, 0x0000(t1); sb t0, 0x0009(a0)
+        li      t1, Global.vs.stocks
+        lbu     t0, 0x0000(t1); sb t0, 0x000A(a0)
+        sb      r0, 0x000B(a0)                  // padding
+
+        // +0x0C: vanilla item bitmask
+        li      t1, Item.ENABLED_BITMASK
+        lw      t0, 0x0000(t1)
+        sw      t0, 0x000C(a0)
+
+        // +0x10..+0x17: extended item bitmask (in-match + saved)
+        li      t1, Item.EXTENDED_ENABLED_BITMASK
+        lw      t0, 0x0000(t1); sw t0, 0x0010(a0)
+        lw      t0, 0x0004(t1); sw t0, 0x0014(a0)
+
+        // +0x18..+0x1F: reserved (zero out)
+        sw      r0, 0x0018(a0)
+        sw      r0, 0x001C(a0)
+
+        lw      t0, 0x0004(sp)
+        lw      t1, 0x0008(sp)
+        lw      t2, 0x000C(sp)
+        jr      ra
+        addiu   sp, sp, 0x0010
+    }
+
+    // @ Description
+    // Helper: counterpart to vs_options_pack_. Reads the 32-byte buffer at a0,
+    // checks the magic word, and if valid applies the saved values back to the
+    // live Global.vs.* addresses and the two item bitmasks. If the magic is
+    // missing the buffer is just ignored — the caller's defaults remain.
+    // @ Arguments
+    // a0 - source buffer (32 bytes)
+    scope vs_options_unpack_: {
+        addiu   sp, sp, -0x0010
+        sw      t0, 0x0004(sp)
+        sw      t1, 0x0008(sp)
+        sw      t2, 0x000C(sp)
+
+        lw      t0, 0x0000(a0)                   // magic word
+        li      t1, VS_OPTIONS_MAGIC
+        bne     t0, t1, _skip                    // no valid save → leave defaults
+        nop
+
+        // VS settings bytes back to the live addresses
+        lbu     t0, 0x0004(a0); li t1, Global.vs.handicap;       sb t0, 0x0000(t1)
+        lbu     t0, 0x0005(a0); li t1, Global.vs.team_attack;    sb t0, 0x0000(t1)
+        lbu     t0, 0x0006(a0); li t1, Global.vs.stage_select;   sb t0, 0x0000(t1)
+        lbu     t0, 0x0007(a0); li t1, Global.vs.damage;         sb t0, 0x0000(t1)
+        lbu     t0, 0x0008(a0); li t1, Global.vs.item_frequency; sb t0, 0x0000(t1)
+        lbu     t0, 0x0009(a0); li t1, Global.vs.time;           sb t0, 0x0000(t1)
+        lbu     t0, 0x000A(a0); li t1, Global.vs.stocks;         sb t0, 0x0000(t1)
+
+        // Vanilla item bitmask
+        lw      t0, 0x000C(a0); li t1, Item.ENABLED_BITMASK; sw t0, 0x0000(t1)
+
+        // Extended item bitmask (in-match + saved word)
+        li      t1, Item.EXTENDED_ENABLED_BITMASK
+        lw      t0, 0x0010(a0); sw t0, 0x0000(t1)
+        lw      t0, 0x0014(a0); sw t0, 0x0004(t1)
+
+        _skip:
+        lw      t0, 0x0004(sp)
+        lw      t1, 0x0008(sp)
+        lw      t2, 0x000C(sp)
+        jr      ra
+        addiu   sp, sp, 0x0010
+    }
+
+    // @ Description
+    // Snapshots the live VS Mode settings into block_vs_options and flushes the
+    // block to SRAM. Wired up from VsRemixMenu.save_global_settings_ so the
+    // user's options persist across reboots without needing a Custom Profile.
+    scope vs_options_save_: {
+        addiu   sp, sp, -0x0010
+        sw      ra, 0x0004(sp)
+        sw      a0, 0x0008(sp)
+
+        li      a0, block_vs_options + 0x0010       // a0 = block's RAM data area
+        jal     vs_options_pack_
+        nop
+
+        // CAUTION: `li` is a *pseudo-instruction* that expands to two real
+        // ops (`lui` + `ori`). Putting it in a delay slot only places the
+        // `lui` half before the JAL — the `ori` runs AFTER SRAM.save_
+        // returns, so a0 is the high half only (e.g. 0x80460000) when the
+        // callee reads it. Earlier versions of this routine hit exactly
+        // that trap: SRAM.save_ then read its struct from 0x80460000,
+        // producing a wild SRAM destination + huge size and ballooning
+        // the save file from 32KB to 64KB. Always materialize a0 BEFORE
+        // the JAL and use a nop in the delay slot.
+        li      a0, block_vs_options                // a0 = block header
+        jal     SRAM.save_
+        nop
+
+        jal     SRAM.mark_saved_                    // ensure the load path runs next boot
+        nop
+
+        lw      ra, 0x0004(sp)
+        lw      a0, 0x0008(sp)
+        jr      ra
+        addiu   sp, sp, 0x0010
+    }
+
+    // @ Description
+    // Re-applies the saved VS Mode settings from block_vs_options. Called from
+    // Settings.set_vs_settings_ after the Tournament defaults are written, so
+    // a missing save leaves Tournament defaults intact.
+    scope vs_options_load_: {
+        addiu   sp, sp, -0x0010
+        sw      ra, 0x0004(sp)
+        sw      a0, 0x0008(sp)
+
+        li      a0, block_vs_options + 0x0010       // source buffer
+        jal     vs_options_unpack_
+        nop
+
+        lw      ra, 0x0004(sp)
+        lw      a0, 0x0008(sp)
+        jr      ra
+        addiu   sp, sp, 0x0010
     }
 
     // @ Description
@@ -3230,11 +3691,18 @@ scope Toggles {
         _next_profile:
         beqz    t0, _end                       // if (entry = null), then we have the correct profile in v0
         nop
-        sltiu   t5, v0, profile.CUSTOM - 1     // t5 = 1 if we haven't reached the end of profiles
+        // Only iterate over the 4 built-in defaults arrays (CE/TE/NE/JP).
+        // profile.CUSTOM_USER lives in SRAM (not in the `profiles` pointer
+        // table) and profile.CUSTOM is a display-only fallback id — checking
+        // either of them here would index past `profiles` and crash on the
+        // garbage pointer the next loop iteration tries to dereference.
+        sltiu   t5, v0, profile.CUSTOM_USER - 1 // t5 = 1 while v0 still points at a built-in profile
         bnez    t5, _load                      // if more profiles to check, load the next one
         addiu   v0, v0, 0x0001                 // v0 = next profile index
 
-        // if we made it here, it's not one of our profiles, and v0 = CUSTOM
+        // If we made it here, none of the built-ins matched. v0 is now
+        // profile.CUSTOM_USER which makes the dropdown show the user-saved
+        // profile name (or the default "CustomProfil" if none saved yet).
 
         _end:
         lw      ra, 0x0004(sp)                 // ~

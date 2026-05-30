@@ -53,12 +53,22 @@ scope Settings {
         lli     t1, ITEM_FREQUENCY          // ~
         sb      t1, 0x0000(t0)              // update game Mode
 
+        // Now that the Tournament defaults are in place, overlay any saved
+        // VS Mode settings on top. vs_options_load_ checks its block magic
+        // and leaves the defaults alone if no save exists yet.
+        // Need to preserve ra across the jal since we don't have a stack
+        // frame here (sp's allocated buffer at +0x4/+0x8 is for t0/t1 only).
+        sw      ra, 0x000C(sp)
+        jal     Toggles.vs_options_load_
+        nop
+        lw      ra, 0x000C(sp)
+
         lw      t0, 0x0004(sp)              // ~
         lw      t1, 0x0008(sp)              // restore registers
         addiu   sp, sp, 0x0010              // deallocate stack space
         lw      t5, 0x0000(t1)              // original line 1
         lui     t6, 0x800A                  // original line 2
-        j       _set_vs_settings_return     // retrun 
+        j       _set_vs_settings_return     // retrun
         nop
     }
 

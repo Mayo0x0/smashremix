@@ -386,6 +386,19 @@ scope VsRemixMenu {
     // @ Arguments
     // a0 - vs_mode_flag
     scope save_global_settings_: {
+        // Top-level stack frame so we can safely call into Toggles.vs_options_save_
+        // (which jals further). All existing exit paths fall through _end, which
+        // now restores ra. _apply_teams_costumes' nested frame still works — it
+        // sits inside this outer frame and tears itself down before reaching _end.
+        addiu   sp, sp, -0x0010
+        sw      ra, 0x0004(sp)
+
+        // Persist the live VS settings to SRAM so they survive a reboot. Runs
+        // unconditionally on every menu-button exit; cheap, no Custom-Profile
+        // dependency.
+        jal     Toggles.vs_options_save_
+        nop
+
         li      at, Global.vs.game_mode     // at = game_mode address
         lbu     t0, 0x0000(at)              // t0 = game_mode
         li      t1, global_game_mode
@@ -467,6 +480,8 @@ scope VsRemixMenu {
         addiu   sp, sp, 0x0010              // deallocate stack space
 
         _end:
+        lw      ra, 0x0004(sp)
+        addiu   sp, sp, 0x0010
         jr      ra
         nop
     }

@@ -1678,6 +1678,29 @@ scope Stamina {
             sw      at, 0x0058(v0)          // update X position
 
             _set_mode:
+            // [Smash Remix] Persist live VS Mode match options to SRAM here.
+            // This label is the tail of mnVSModeSaveSettings() (reached via
+            // the `j _set_mode` patch at 0x80133808), so every call to
+            // mnVSModeSaveSettings — main-menu button click, submenu exit,
+            // CSS entry — flows through this hook. Without it the user's
+            // Team Attack / Items / Handicap / Stage Select / Damage / Time
+            // / Stocks settings would be lost on reboot whenever they were
+            // changed inside a sub-screen and left via B (no main-menu click).
+            //
+            // Preserve v0 (rule index, used by the Stamina logic below) and
+            // v1 (settings struct base used by _end_set_mode). t9/t8/at are
+            // reloaded by the original code, so they don't need saving.
+            addiu   sp, sp, -0x0018
+            sw      ra, 0x0004(sp)
+            sw      v0, 0x0008(sp)
+            sw      v1, 0x000C(sp)
+            jal     Toggles.vs_options_save_
+            nop
+            lw      ra, 0x0004(sp)
+            lw      v0, 0x0008(sp)
+            lw      v1, 0x000C(sp)
+            addiu   sp, sp, 0x0018
+
             // v0 = rule index
             lli     t9, STAMINA_MODE        // t9 = Stamina mode
             lli     at, 0x0002              // at = Stamina index
