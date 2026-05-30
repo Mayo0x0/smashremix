@@ -4,6 +4,10 @@ This fork extends Smash Remix with four feature sets that live entirely
 behind toggles in **Options → Gameplay**, so the upstream balance is
 unchanged unless you opt in.
 
+<img width="302" height="224" alt="Screenshot6" src="https://github.com/user-attachments/assets/c67001af-18d4-411f-92ac-199ce5b07bfe" />
+<img width="297" height="225" alt="Screenshot7" src="https://github.com/user-attachments/assets/1b4796a4-6b10-460d-bc74-2e41b02d0794" />
+<img width="304" height="227" alt="Screenshot8" src="https://github.com/user-attachments/assets/bcc47c45-bbc3-4c41-878a-74f8e95748e0" />
+
 ## Tag Team mode upgrades
 
 - **Tag Team L+Z Swap** *(default: ON)* — hold L+Z for ~30 frames to
