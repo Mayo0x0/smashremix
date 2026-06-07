@@ -92,6 +92,17 @@ scope TagTeam {
     constant HOLD_THRESHOLD(30)
 
     // @ Description
+    // Set to TRUE by check_swap_input_ right before it calls load_next_char_ for
+    // a manual tag swap. While set, load_next_char_ skips its "same char_id → just
+    // update costume" shortcut and always does a full destroy+respawn, so the
+    // incoming fighter starts at 0% and its slot's saved_damage applies cleanly
+    // even when two queue slots hold the same character. load_next_char_ clears it.
+    OS.align(4)
+    force_respawn:
+    db 0
+    OS.align(4)
+
+    // @ Description
     // Per-port, per-slot saved damage percentage for Tag Team manual swap.
     // Indexed as [port][slot], 4 ports x 6 slots x 4 bytes = 96 bytes total.
     // Reset at match start; saved when a character tags out, restored on tag-in.
@@ -1170,11 +1181,28 @@ scope TagTeam {
         lbu     t2, 0x0001(t8)              // t2 = costume_id
 
         _check_char_id:
+        // Manual tag swaps set force_respawn so the fighter is always
+        // destroyed+respawned, even when the incoming queue slot holds the same
+        // char_id as the current fighter. Without this, two slots sharing a
+        // character would take the _update_costume shortcut (no respawn) and the
+        // live damage would ride along instead of the slot's own saved_damage.
+        li      t9, force_respawn
+        lbu     t9, 0x0000(t9)
+        beqz    t9, _normal_char_check      // not a forced swap → normal shortcut
+        lbu     t2, 0x0001(t8)              // t2 = costume_id (delay slot; _load needs it)
+        b       _load                       // forced → always reload/respawn
+        nop
+
+        _normal_char_check:
         lw      t2, 0x0008(a1)              // t2 = current char_id
         beq     t1, t2, _update_costume     // if already the right character, just update costume/shade
         lbu     t2, 0x0001(t8)              // t2 = costume_id
 
         _load:
+        // Consume the force_respawn flag here so it can never leak into a later
+        // normal-death load_next_char_ call (every respawn path passes through _load).
+        li      t9, force_respawn
+        sb      r0, 0x0000(t9)
         // Clear out flags for CharEnvColor stuff to avoid DISASTROUS CONSEQUENCES
         jal     CharEnvColor.reset_custom_display_lists_
         lw      a0, 0x0008(a1)              // a0 = char_id
@@ -1705,10 +1733,14 @@ scope TagTeam {
         // s1 = player GObj, t0 = player struct
         or      s2, t0, r0                  // s2 = player struct
 
-        // ── Step 4: Guard — need >= 2 stocks remaining to have a reserve ──────────
-        lbu     t2, 0x0014(s2)              // t2 = stocks_remaining
-        sltiu   t3, t2, 0x0002             // t3 = 1 if stocks_remaining < 2
-        bnez    t3, _next_port              // skip if 0 or 1 stock left (no reserve)
+        // ── Step 4: Guard — need a reserve to swap to ────────────────────────────
+        // 0x0014 holds "stocks_remaining" = (#live chars - 1): 4 chars→3, 3→2,
+        // 2→1, 1→0. A reserve exists whenever it is >= 1, i.e. at least two live
+        // characters remain. The old "< 2" test wrongly blocked the swap when only
+        // two characters were left (stocks_remaining == 1); only block when the
+        // active char is the last one (stocks_remaining == 0).
+        lbu     t2, 0x0014(s2)              // t2 = stocks_remaining (#live chars - 1)
+        beqz    t2, _next_port              // only the active char left → no reserve
         nop
 
         // ── Step 5: queue_index = stocks_setting - stocks_remaining ───────────────
@@ -1918,6 +1950,35 @@ scope TagTeam {
         sw      s0, 0x0014(sp)              // save port for post-jal restore
         sw      t3, 0x0018(sp)              // save queue_index for post-jal restore
 
+        // Force a full respawn so the incoming fighter starts at 0% and step 13
+        // restores the slot's own saved damage (no carry-over when two slots share
+        // a character). load_next_char_ consumes (clears) the flag.
+        li      t4, force_respawn
+        lli     t5, OS.TRUE
+        sb      t5, 0x0000(t4)
+
+        // Cleanly release the held item from the OUTGOING fighter while it still
+        // exists, using the engine's own release path (tears the hold-joint down).
+        // The new fighter takes a FRESH hold in Step 14. Releasing first is required:
+        // re-holding without it stacks a duplicate hold-joint and the item floats off.
+        // itMainSetFighterRelease(item, &zero_vel, 0.0F, 0, 0):
+        //   a0=item, a1=&vel, a2=throw_mul, a3=stat_flags, [sp+0x10]=stat_count.
+        lw      t0, 0x0030(sp)              // t0 = held item GObj (0 if none)
+        beqz    t0, _do_swap_call           // nothing held → skip release
+        nop
+        addiu   sp, sp, -0x0040             // reserve arg/scratch (5th arg is on stack)
+        sw      r0, 0x0010(sp)              // stat_count = 0
+        sw      r0, 0x0028(sp)              // zero_vel.x
+        sw      r0, 0x002C(sp)              // zero_vel.y
+        sw      r0, 0x0030(sp)              // zero_vel.z
+        or      a0, t0, r0                  // a0 = item GObj
+        addiu   a1, sp, 0x0028             // a1 = &zero_vel
+        or      a2, r0, r0                  // a2 = throw_mul (0.0F bits)
+        jal     0x80172984                  // itMainSetFighterRelease
+        or      a3, r0, r0                  // a3 = stat_flags (0) (delay slot)
+        addiu   sp, sp, 0x0040             // restore sp
+
+        _do_swap_call:
         jal     load_next_char_
         or      a0, s1, r0                  // a0 = player GObj (delay slot)
 
@@ -1957,6 +2018,7 @@ scope TagTeam {
 
         _restore_position:
         // t0 = new player gobj, t1 = new player struct
+        sw      t0, 0x0038(sp)              // stash new player GObj for the item re-attach (Step 14)
         // Restore position into the new player's position struct.
         lw      t2, 0x0074(t0)              // t2 = new position struct
         beqz    t2, _restore_held_item      // sanity — no position struct, still do item/charge/damage
@@ -1981,12 +2043,13 @@ scope TagTeam {
         sw      t7, 0x0044(t1)              // restore facing
 
         _restore_held_item:
-        // Restore held-item pointer so the new fighter is wired to the same item
-        // the outgoing char was holding. load_next_char_'s item loop already
-        // pointed the item's owner field at the new GObj, so this completes the
-        // round trip and the item rides along with the swap.
-        lw      t7, 0x0030(sp)              // t7 = saved held_item pointer
-        sw      t7, 0x084C(t1)              // restore held_item pointer
+        // The held item is fully re-wired later in Step 14 (_restore_item_attach)
+        // by re-running the engine's pickup routine, which sets the new fighter's
+        // held-item pointer AND rebuilds the hand attachment. We deliberately do
+        // NOT pre-set 0x084C here: if the pickup routine treats a non-zero
+        // held-item slot as "already holding", pre-setting it could make it skip
+        // the re-attach and leave the item visually detached. load_next_char_'s
+        // item loop already re-pointed the item's owner at the new GObj.
 
         _restore_charge:
         // Restore the new (incoming) char's B-special charge state from the slot
@@ -2076,13 +2139,35 @@ scope TagTeam {
         addu    t2, t2, t4                  // &saved_damage[port][queue_index]
         lw      t3, 0x0000(t2)              // t3 = incoming char's saved damage
 
-        beqz    t3, _end                    // if 0%, nothing to restore — done
+        beqz    t3, _restore_item_attach    // if 0%, nothing to restore — still re-attach item
         nop
 
         // t1 = new player struct, t3 = damage to add (new char spawned at 0%, add saved amount)
         or      a0, t1, r0                  // a0 = player struct
         jal     Character.add_percent_      // safe wrapper around 0x800EA248
         or      a1, t3, r0                  // a1 = damage to restore (delay slot)
+
+        _restore_item_attach:
+        // ── Step 14: Re-hold the carried item on the NEW fighter ──────────────────
+        // Step 11 cleanly released the item from the outgoing fighter, so it is now
+        // a free item. itMainSetFighterHold rebuilds a fresh hold-joint, anchors it
+        // to the new fighter's hand joint (it picks the correct per-character joint
+        // id internally), sets the owner + the fighter's held-item pointer, and
+        // seats it in the hand. No item-specific payload (ammo/charges) is touched.
+        lw      a0, 0x0030(sp)              // a0 = held item GObj (0 if none)
+        beqz    a0, _end                    // nothing was held → done
+        lw      a1, 0x0038(sp)              // a1 = new player GObj (delay slot)
+        beqz    a1, _end                    // sanity: no new GObj → skip
+        nop
+        jal     0x80172CA4                  // itMainSetFighterHold(item, new fighter)
+        addiu   sp, sp, -0x0030             // unsafe call — reserve scratch (delay slot)
+        addiu   sp, sp, 0x0030              // reclaim scratch
+
+        // The Step 11 release armed the item's throw attack-collision; make sure the
+        // now-held item carries no active hitbox until it is actually swung.
+        lw      a0, 0x0030(sp)              // a0 = item GObj
+        lw      t0, 0x0084(a0)              // t0 = item special struct
+        sw      r0, 0x010C(t0)              // hitbox type = NONE
 
         b       _end
         nop
