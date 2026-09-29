@@ -1,0 +1,3341 @@
+[
+  {
+    "alias": "src/BlastZone.asm",
+    "target": "src/Blastzone.asm",
+    "target_name": "Blastzone.asm",
+    "type": "file",
+    "depth": 2
+  },
+  {
+    "alias": "src/CONKER",
+    "target": "src/Conker",
+    "target_name": "Conker",
+    "type": "dir",
+    "depth": 2
+  },
+  {
+    "alias": "src/Command.asm",
+    "target": "src/command.asm",
+    "target_name": "command.asm",
+    "type": "file",
+    "depth": 2
+  },
+  {
+    "alias": "src/Elink",
+    "target": "src/ELink",
+    "target_name": "ELink",
+    "type": "dir",
+    "depth": 2
+  },
+  {
+    "alias": "src/Fireball.asm",
+    "target": "src/fireball.asm",
+    "target_name": "fireball.asm",
+    "type": "file",
+    "depth": 2
+  },
+  {
+    "alias": "src/GOEMON",
+    "target": "src/Goemon",
+    "target_name": "Goemon",
+    "type": "dir",
+    "depth": 2
+  },
+  {
+    "alias": "src/MIDI.asm",
+    "target": "src/midi.asm",
+    "target_name": "midi.asm",
+    "type": "file",
+    "depth": 2
+  },
+  {
+    "alias": "src/Midi.asm",
+    "target": "src/midi.asm",
+    "target_name": "midi.asm",
+    "type": "file",
+    "depth": 2
+  },
+  {
+    "alias": "src/Moveset.asm",
+    "target": "src/moveset.asm",
+    "target_name": "moveset.asm",
+    "type": "file",
+    "depth": 2
+  },
+  {
+    "alias": "src/OS.asm",
+    "target": "src/os.asm",
+    "target_name": "os.asm",
+    "type": "file",
+    "depth": 2
+  },
+  {
+    "alias": "src/PEPPY",
+    "target": "src/Peppy",
+    "target_name": "Peppy",
+    "type": "dir",
+    "depth": 2
+  },
+  {
+    "alias": "src/ResultsScreen.asm",
+    "target": "src/resultsscreen.asm",
+    "target_name": "resultsscreen.asm",
+    "type": "file",
+    "depth": 2
+  },
+  {
+    "alias": "src/SLIPPY",
+    "target": "src/Slippy",
+    "target_name": "Slippy",
+    "type": "dir",
+    "depth": 2
+  },
+  {
+    "alias": "src/Timeouts.asm",
+    "target": "src/timeouts.asm",
+    "target_name": "timeouts.asm",
+    "type": "file",
+    "depth": 2
+  },
+  {
+    "alias": "src/moveset",
+    "target": "src/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 2
+  },
+  {
+    "alias": "src/req",
+    "target": "src/Req",
+    "target_name": "Req",
+    "type": "dir",
+    "depth": 2
+  },
+  {
+    "alias": "src/Banjo/moveset",
+    "target": "src/Banjo/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Banjo/sounds",
+    "target": "src/Banjo/Sounds",
+    "target_name": "Sounds",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Bowser/Bowser.asm",
+    "target": "src/Bowser/bowser.asm",
+    "target_name": "bowser.asm",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/Conker/moveset",
+    "target": "src/Conker/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Crash/moveset",
+    "target": "src/Crash/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/DSamus/DSamusSpecial.asm",
+    "target": "src/DSamus/DsamusSpecial.asm",
+    "target_name": "DsamusSpecial.asm",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/DSamus/moveset",
+    "target": "src/DSamus/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Dedede/moveset",
+    "target": "src/Dedede/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/DrLuigi/moveset",
+    "target": "src/DrLuigi/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/DrMario/moveset",
+    "target": "src/DrMario/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/DragonKing/moveset",
+    "target": "src/DragonKing/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/ELink/moveset",
+    "target": "src/ELink/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/EPika/moveset",
+    "target": "src/EPika/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/EPuff/moveset",
+    "target": "src/EPuff/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/EPuff/sounds",
+    "target": "src/EPuff/Sounds",
+    "target_name": "Sounds",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/ESamus/moveset",
+    "target": "src/ESamus/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Ebi/moveset",
+    "target": "src/Ebi/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Falco/moveset",
+    "target": "src/Falco/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/GBowser/GBowser.asm",
+    "target": "src/GBowser/gbowser.asm",
+    "target_name": "gbowser.asm",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/Ganondorf/moveset",
+    "target": "src/Ganondorf/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Goemon/moveset",
+    "target": "src/Goemon/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/JDK/moveset",
+    "target": "src/JDK/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/JFalcon/moveset",
+    "target": "src/JFalcon/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/JFox/moveset",
+    "target": "src/JFox/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/JKirby/moveset",
+    "target": "src/JKirby/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/JLink/moveset",
+    "target": "src/JLink/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/JLuigi/moveset",
+    "target": "src/JLuigi/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/JMario/moveset",
+    "target": "src/JMario/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/JNess/moveset",
+    "target": "src/JNess/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/JPika/moveset",
+    "target": "src/JPika/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/JPuff/moveset",
+    "target": "src/JPuff/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/JSamus/moveset",
+    "target": "src/JSamus/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/JYoshi/moveset",
+    "target": "src/JYoshi/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Kirby/moveset",
+    "target": "src/Kirby/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Lanky/moveset",
+    "target": "src/Lanky/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Lucas/moveset",
+    "target": "src/Lucas/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Marina/moveset",
+    "target": "src/Marina/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Marina/sounds",
+    "target": "src/Marina/Sounds",
+    "target_name": "Sounds",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Marth/moveset",
+    "target": "src/Marth/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Marth/sounds",
+    "target": "src/Marth/Sounds",
+    "target_name": "Sounds",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Mewtwo/moveset",
+    "target": "src/Mewtwo/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/NBanjo/moveset",
+    "target": "src/NBanjo/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/NBowser/NBowser.asm",
+    "target": "src/NBowser/nbowser.asm",
+    "target_name": "nbowser.asm",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/NMarina/moveset",
+    "target": "src/NMarina/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Peach/moveset",
+    "target": "src/Peach/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Peppy/moveset",
+    "target": "src/Peppy/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Piano/moveset",
+    "target": "src/Piano/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Roy/moveset",
+    "target": "src/Roy/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Roy/sounds",
+    "target": "src/Roy/Sounds",
+    "target_name": "Sounds",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/SSonic/moveset",
+    "target": "src/SSonic/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/SSonic/sounds",
+    "target": "src/SSonic/Sounds",
+    "target_name": "Sounds",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Sheik/moveset",
+    "target": "src/Sheik/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Slippy/moveset",
+    "target": "src/Slippy/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Sonic/moveset",
+    "target": "src/Sonic/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Sonic/sounds",
+    "target": "src/Sonic/Sounds",
+    "target_name": "Sounds",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Wario/moveset",
+    "target": "src/Wario/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Wario/sounds",
+    "target": "src/Wario/Sounds",
+    "target_name": "Sounds",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/Wolf/moveset",
+    "target": "src/Wolf/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/YoungLink/moveset",
+    "target": "src/YoungLink/Moveset",
+    "target_name": "Moveset",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/costumes/Conker",
+    "target": "src/costumes/conker",
+    "target_name": "conker",
+    "type": "dir",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/AC_TITLE.bin",
+    "target": "src/music/ac_title.bin",
+    "target_name": "ac_title.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/AGAVE.bin",
+    "target": "src/music/agave.bin",
+    "target_name": "agave.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/ANIMAL_CROSSING.bin",
+    "target": "src/music/animal_crossing.bin",
+    "target_name": "animal_crossing.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/AREA6.bin",
+    "target": "src/music/area6.bin",
+    "target_name": "area6.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/ARIA_OF_THE_SOUL.bin",
+    "target": "src/music/aria_of_the_soul.bin",
+    "target_name": "aria_of_the_soul.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/ASHLEYS_THEME.bin",
+    "target": "src/music/ashleys_theme.bin",
+    "target_name": "ashleys_theme.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BABY_BOWSER.bin",
+    "target": "src/music/baby_bowser.bin",
+    "target_name": "baby_bowser.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BALLOONFIGHT.bin",
+    "target": "src/music/balloonfight.bin",
+    "target_name": "balloonfight.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BANJO_MAIN.bin",
+    "target": "src/music/banjo_main.bin",
+    "target_name": "banjo_main.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BANJO_VICTORY.bin",
+    "target": "src/music/banjo_victory.bin",
+    "target_name": "banjo_victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BATTLEFIELD.bin",
+    "target": "src/music/battlefield.bin",
+    "target_name": "battlefield.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BATTLEFIELDV2.bin",
+    "target": "src/music/battlefieldv2.bin",
+    "target_name": "battlefieldv2.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BATTLE_AMONG_FRIENDS.bin",
+    "target": "src/music/battle_among_friends.bin",
+    "target_name": "battle_among_friends.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BATTLE_C1.bin",
+    "target": "src/music/Battle_C1.bin",
+    "target_name": "Battle_C1.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BATTLE_GOLD_SILVER.bin",
+    "target": "src/music/battle_gold_silver.bin",
+    "target_name": "battle_gold_silver.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BEIN_FRIENDS.bin",
+    "target": "src/music/bein_friends.bin",
+    "target_name": "bein_friends.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BEWARE_THE_FORESTS_MUSHROOMS.bin",
+    "target": "src/music/beware_the_forests_mushrooms.bin",
+    "target_name": "beware_the_forests_mushrooms.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BIG_BLUE.bin",
+    "target": "src/music/big_blue.bin",
+    "target_name": "big_blue.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BIG_BOO.bin",
+    "target": "src/music/big_boo.bin",
+    "target_name": "big_boo.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BIS_THEGRANDFINALE.bin",
+    "target": "src/music/bis_thegrandfinale.bin",
+    "target_name": "bis_thegrandfinale.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BK_FINALBATTLE.bin",
+    "target": "src/music/bk_finalbattle.bin",
+    "target_name": "bk_finalbattle.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BLASTCORPS_MENU.bin",
+    "target": "src/music/blastcorps_menu.bin",
+    "target_name": "blastcorps_menu.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BLOODY_TEARS.bin",
+    "target": "src/music/bloody_tears.bin",
+    "target_name": "bloody_tears.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BLUE_RESORT.bin",
+    "target": "src/music/blue_resort.bin",
+    "target_name": "blue_resort.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BOARD_SHOP.bin",
+    "target": "src/music/Board_Shop.bin",
+    "target_name": "Board_Shop.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BOB.bin",
+    "target": "src/music/bob.bin",
+    "target_name": "bob.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BOSS_E.bin",
+    "target": "src/music/boss_E.bin",
+    "target_name": "boss_E.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BOWSERBOSS.bin",
+    "target": "src/music/bowserboss.bin",
+    "target_name": "bowserboss.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BOWSERFINAL.bin",
+    "target": "src/music/bowserfinal.bin",
+    "target_name": "bowserfinal.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BOWSERROAD.bin",
+    "target": "src/music/bowserroad.bin",
+    "target_name": "bowserroad.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BOWSER_VICTORY.bin",
+    "target": "src/music/Bowser_Victory.bin",
+    "target_name": "Bowser_Victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BRAWL.bin",
+    "target": "src/music/Brawl.bin",
+    "target_name": "Brawl.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BRAWL_OOT.bin",
+    "target": "src/music/brawl_oot.bin",
+    "target_name": "brawl_oot.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BUBBLEGUM_KK.bin",
+    "target": "src/music/bubblegum_kk.bin",
+    "target_name": "bubblegum_kk.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BUBBLY.bin",
+    "target": "src/music/bubbly.bin",
+    "target_name": "bubbly.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BUMPERCROPBUMP.bin",
+    "target": "src/music/bumpercropbump.bin",
+    "target_name": "bumpercropbump.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BURNINGTOWN.bin",
+    "target": "src/music/burningtown.bin",
+    "target_name": "burningtown.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/BUTTER_BUILDING.bin",
+    "target": "src/music/butter_building.bin",
+    "target_name": "butter_building.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CASINO_NIGHT.bin",
+    "target": "src/music/casino_night.bin",
+    "target_name": "casino_night.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CHEMICAL_PLANT.bin",
+    "target": "src/music/chemical_plant.bin",
+    "target_name": "chemical_plant.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CHILL.bin",
+    "target": "src/music/Chill.bin",
+    "target_name": "Chill.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CLOCKTOWER.bin",
+    "target": "src/music/ClockTower.bin",
+    "target_name": "ClockTower.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CLOCKTOWN.bin",
+    "target": "src/music/clocktown.bin",
+    "target_name": "clocktown.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/COBALT.bin",
+    "target": "src/music/cobalt.bin",
+    "target_name": "cobalt.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CONKER_VICTORY.bin",
+    "target": "src/music/conker_victory.bin",
+    "target_name": "conker_victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CONTROL.bin",
+    "target": "src/music/Control.bin",
+    "target_name": "Control.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/COOLCOOLMOUNTAIN.bin",
+    "target": "src/music/coolcoolmountain.bin",
+    "target_name": "coolcoolmountain.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CORNERIA.bin",
+    "target": "src/music/corneria.bin",
+    "target_name": "corneria.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CORRIDORS_OF_TIME.bin",
+    "target": "src/music/Corridors_of_Time.bin",
+    "target_name": "Corridors_of_Time.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CORTEX.bin",
+    "target": "src/music/cortex.bin",
+    "target_name": "cortex.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CRADLE.bin",
+    "target": "src/music/cradle.bin",
+    "target_name": "cradle.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CRASH3.bin",
+    "target": "src/music/crash3.bin",
+    "target_name": "crash3.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CRASHBASH_LOADING.bin",
+    "target": "src/music/crashbash_loading.bin",
+    "target_name": "crashbash_loading.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CRASHBONUS.bin",
+    "target": "src/music/crashbonus.bin",
+    "target_name": "crashbonus.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CRASH_VICTORY.bin",
+    "target": "src/music/crash_victory.bin",
+    "target_name": "crash_victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CRATERIA_MAIN.bin",
+    "target": "src/music/crateria_main.bin",
+    "target_name": "crateria_main.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CREDITS_BRAWL.bin",
+    "target": "src/music/credits_brawl.bin",
+    "target_name": "credits_brawl.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/CRESCENT_ISLAND.bin",
+    "target": "src/music/Crescent_Island.bin",
+    "target_name": "Crescent_Island.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DANGEROUS_FOE.bin",
+    "target": "src/music/dangerous_foe.bin",
+    "target_name": "dangerous_foe.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DARKWORLD.bin",
+    "target": "src/music/darkworld.bin",
+    "target_name": "darkworld.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DATADYNE.bin",
+    "target": "src/music/dataDyne.bin",
+    "target_name": "dataDyne.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DEATH_MOUNTAIN.bin",
+    "target": "src/music/death_mountain.bin",
+    "target_name": "death_mountain.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DECISIVE.bin",
+    "target": "src/music/decisive.bin",
+    "target_name": "decisive.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DEDEDE.bin",
+    "target": "src/music/dedede.bin",
+    "target_name": "dedede.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DEDEDE_VICTORY.bin",
+    "target": "src/music/dedede_victory.bin",
+    "target_name": "dedede_victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DELFINO.bin",
+    "target": "src/music/delfino.bin",
+    "target_name": "delfino.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DISCOVERYFALLS.bin",
+    "target": "src/music/discoveryfalls.bin",
+    "target_name": "discoveryfalls.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DKCTITLE.bin",
+    "target": "src/music/dkctitle.bin",
+    "target_name": "dkctitle.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DKROPTIONS.bin",
+    "target": "src/music/dkroptions.bin",
+    "target_name": "dkroptions.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DKR_BOSS.bin",
+    "target": "src/music/DKR_Boss.bin",
+    "target_name": "DKR_Boss.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DK_MEDLEY.bin",
+    "target": "src/music/dk_medley.bin",
+    "target_name": "dk_medley.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DK_RAP.bin",
+    "target": "src/music/dk_rap.bin",
+    "target_name": "dk_rap.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DOOM1.bin",
+    "target": "src/music/doom1.bin",
+    "target_name": "doom1.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DRACULAS_CASTLE.bin",
+    "target": "src/music/draculas_castle.bin",
+    "target_name": "draculas_castle.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DRACULAS_TEARS.bin",
+    "target": "src/music/draculas_tears.bin",
+    "target_name": "draculas_tears.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DRAGONKING.bin",
+    "target": "src/music/DragonKing.bin",
+    "target_name": "DragonKing.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DRAKE_LAKE.bin",
+    "target": "src/music/drake_lake.bin",
+    "target_name": "drake_lake.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DRMARIO_VICTORY.bin",
+    "target": "src/music/DrMario_Victory.bin",
+    "target_name": "DrMario_Victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DR_MARIO.bin",
+    "target": "src/music/dr_mario.bin",
+    "target_name": "dr_mario.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/DSAMUS_VICTORY.bin",
+    "target": "src/music/DSamus_Victory.bin",
+    "target_name": "DSamus_Victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/EASTON_KINGDOM.bin",
+    "target": "src/music/easton_kingdom.bin",
+    "target_name": "easton_kingdom.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/ELADARD.bin",
+    "target": "src/music/eladard.bin",
+    "target_name": "eladard.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/ENEMYCARD.bin",
+    "target": "src/music/enemycard.bin",
+    "target_name": "enemycard.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/ESPERANCE.bin",
+    "target": "src/music/Esperance.bin",
+    "target_name": "Esperance.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/EVEN_DRIER_GUYS.bin",
+    "target": "src/music/Even_Drier_Guys.bin",
+    "target_name": "Even_Drier_Guys.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/EVERYTHING.bin",
+    "target": "src/music/everything.bin",
+    "target_name": "everything.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FALCO_VICTORY.bin",
+    "target": "src/music/Falco_Victory.bin",
+    "target_name": "Falco_Victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FD_BRAWL.bin",
+    "target": "src/music/fd_brawl.bin",
+    "target_name": "fd_brawl.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FE6_MEDLEY.bin",
+    "target": "src/music/fe6_medley.bin",
+    "target_name": "fe6_medley.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FE_MEDLEY.bin",
+    "target": "src/music/fe_medley.bin",
+    "target_name": "fe_medley.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FF4BOSS.bin",
+    "target": "src/music/ff4boss.bin",
+    "target_name": "ff4boss.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FIGHT_AGAINST_BOWSER.bin",
+    "target": "src/music/fight_against_bowser.bin",
+    "target_name": "fight_against_bowser.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FILESELECT_SM64.bin",
+    "target": "src/music/fileselect_sm64.bin",
+    "target_name": "fileselect_sm64.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FINALTEMPLE.bin",
+    "target": "src/music/finaltemple.bin",
+    "target_name": "finaltemple.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FLAT_ZONE.bin",
+    "target": "src/music/flat_zone.bin",
+    "target_name": "flat_zone.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FLAT_ZONE_2.bin",
+    "target": "src/music/flat_zone_2.bin",
+    "target_name": "flat_zone_2.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FLYINGBATTERY.bin",
+    "target": "src/music/flyingbattery.bin",
+    "target_name": "flyingbattery.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FOD.bin",
+    "target": "src/music/fod.bin",
+    "target_name": "fod.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FORGONE.bin",
+    "target": "src/music/forgone.bin",
+    "target_name": "forgone.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FORTRESS_BOSS.bin",
+    "target": "src/music/fortress_boss.bin",
+    "target_name": "fortress_boss.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FOURSIDE.bin",
+    "target": "src/music/fourside.bin",
+    "target_name": "fourside.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FRAPPE_SNOWLAND.bin",
+    "target": "src/music/frappe_snowland.bin",
+    "target_name": "frappe_snowland.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FREEZE.bin",
+    "target": "src/music/Freeze.bin",
+    "target_name": "Freeze.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FROSTY_VILLAGE.bin",
+    "target": "src/music/frosty_village.bin",
+    "target_name": "frosty_village.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FROZEN_HILLSIDE.bin",
+    "target": "src/music/frozen_hillside.bin",
+    "target_name": "frozen_hillside.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FUGUE.bin",
+    "target": "src/music/fugue.bin",
+    "target_name": "fugue.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FUTUREFRENZY.bin",
+    "target": "src/music/futurefrenzy.bin",
+    "target_name": "futurefrenzy.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FZEROX_MEDLEY.bin",
+    "target": "src/music/fzerox_medley.bin",
+    "target_name": "fzerox_medley.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FZERO_CLIMBUP.bin",
+    "target": "src/music/fzero_climbup.bin",
+    "target_name": "fzero_climbup.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/FZERO_MEDLEY.bin",
+    "target": "src/music/fzero_medley.bin",
+    "target_name": "fzero_medley.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GALLERY.bin",
+    "target": "src/music/gallery.bin",
+    "target_name": "gallery.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GAME_CORNER.bin",
+    "target": "src/music/game_corner.bin",
+    "target_name": "game_corner.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GANGPLANK.bin",
+    "target": "src/music/gangplank.bin",
+    "target_name": "gangplank.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GANONDORF_BATTLE.bin",
+    "target": "src/music/ganondorf_battle.bin",
+    "target_name": "ganondorf_battle.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GANONMEDLEY.bin",
+    "target": "src/music/ganonmedley.bin",
+    "target_name": "ganonmedley.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GANON_VICTORY.bin",
+    "target": "src/music/Ganon_Victory.bin",
+    "target_name": "Ganon_Victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GB_MEDLEY.bin",
+    "target": "src/music/gb_medley.bin",
+    "target_name": "gb_medley.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GERUDO_VALLEY.bin",
+    "target": "src/music/Gerudo_Valley.bin",
+    "target_name": "Gerudo_Valley.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GHOSTGULPING.bin",
+    "target": "src/music/ghostgulping.bin",
+    "target_name": "ghostgulping.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GIANTWING.bin",
+    "target": "src/music/giantwing.bin",
+    "target_name": "giantwing.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GLACIAL.bin",
+    "target": "src/music/glacial.bin",
+    "target_name": "glacial.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GODDESSBALLAD.bin",
+    "target": "src/music/goddessballad.bin",
+    "target_name": "goddessballad.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GOEMON_VICTORY.bin",
+    "target": "src/music/goemon_victory.bin",
+    "target_name": "goemon_victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GOLDENROD_CITY.bin",
+    "target": "src/music/goldenrod_city.bin",
+    "target_name": "goldenrod_city.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GRABBAG.bin",
+    "target": "src/music/grabbag.bin",
+    "target_name": "grabbag.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GREENGARDEN.bin",
+    "target": "src/music/greengarden.bin",
+    "target_name": "greengarden.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GREEN_GREENS.bin",
+    "target": "src/music/green_greens.bin",
+    "target_name": "green_greens.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/GRIMREAPERSCAVERN.bin",
+    "target": "src/music/grimreaperscavern.bin",
+    "target_name": "grimreaperscavern.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/HILLTOPCHASE.bin",
+    "target": "src/music/hilltopchase.bin",
+    "target_name": "hilltopchase.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/HOGWILD.bin",
+    "target": "src/music/hogwild.bin",
+    "target_name": "hogwild.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/HORROR_LAND.bin",
+    "target": "src/music/horror_land.bin",
+    "target_name": "horror_land.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/HYRULE_TEMPLE.bin",
+    "target": "src/music/hyrule_temple.bin",
+    "target_name": "hyrule_temple.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/INVESTIGATION_X.bin",
+    "target": "src/music/Investigation_X.bin",
+    "target_name": "Investigation_X.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/IRON_BLUE_INTENTION.bin",
+    "target": "src/music/iron_blue_intention.bin",
+    "target_name": "iron_blue_intention.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/ITSATRAP_SM64.bin",
+    "target": "src/music/itsatrap_sm64.bin",
+    "target_name": "itsatrap_sm64.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/JFG_SELECT.bin",
+    "target": "src/music/JFG_Select.bin",
+    "target_name": "JFG_Select.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/JUNGLEJAPES.bin",
+    "target": "src/music/junglejapes.bin",
+    "target_name": "junglejapes.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/KAI_HIGHWAY.bin",
+    "target": "src/music/kai_highway.bin",
+    "target_name": "kai_highway.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/KENGJR.bin",
+    "target": "src/music/KenGJR.bin",
+    "target_name": "KenGJR.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/KING_OF_THE_KOOPAS.bin",
+    "target": "src/music/King_of_the_Koopas.bin",
+    "target_name": "King_of_the_Koopas.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/KITCHEN_ISLAND.bin",
+    "target": "src/music/Kitchen_Island.bin",
+    "target_name": "Kitchen_Island.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/KK_RIDER.bin",
+    "target": "src/music/KK_rider.bin",
+    "target_name": "KK_rider.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/KOKIRI_FOREST.bin",
+    "target": "src/music/kokiri_forest.bin",
+    "target_name": "kokiri_forest.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/LEVEL1_WARIO.bin",
+    "target": "src/music/level1_wario.bin",
+    "target_name": "level1_wario.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/LINKS_AWAKENING_MEDLEY.bin",
+    "target": "src/music/Links_Awakening_Medley.bin",
+    "target_name": "Links_Awakening_Medley.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/LIVE_AND_LEARN.bin",
+    "target": "src/music/live_and_learn.bin",
+    "target_name": "live_and_learn.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/LOST.bin",
+    "target": "src/music/lost.bin",
+    "target_name": "lost.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/LUCAS_VICTORY.bin",
+    "target": "src/music/Lucas_Victory.bin",
+    "target_name": "Lucas_Victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MABE.bin",
+    "target": "src/music/mabe.bin",
+    "target_name": "mabe.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MACHRIDER.bin",
+    "target": "src/music/machrider.bin",
+    "target_name": "machrider.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MADMAZEMAUL.bin",
+    "target": "src/music/MadMazeMaul.bin",
+    "target_name": "MadMazeMaul.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MADMONSTER.bin",
+    "target": "src/music/madmonster.bin",
+    "target_name": "madmonster.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MAIN_MENU2.bin",
+    "target": "src/music/main_menu2.bin",
+    "target_name": "main_menu2.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MAJORA_MIDBOSS.bin",
+    "target": "src/music/majora_midboss.bin",
+    "target_name": "majora_midboss.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MARATHON.bin",
+    "target": "src/music/marathon.bin",
+    "target_name": "marathon.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MARINA_VICTORY.bin",
+    "target": "src/music/marina_victory.bin",
+    "target_name": "marina_victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MARINE_FORTRESS.bin",
+    "target": "src/music/marine_fortress.bin",
+    "target_name": "marine_fortress.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MARTH_VICTORY.bin",
+    "target": "src/music/marth_victory.bin",
+    "target_name": "marth_victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MELEE_MENU.bin",
+    "target": "src/music/melee_menu.bin",
+    "target_name": "melee_menu.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MEMENTOS.bin",
+    "target": "src/music/mementos.bin",
+    "target_name": "mementos.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/METALLIC_MADNESS.bin",
+    "target": "src/music/metallic_madness.bin",
+    "target_name": "metallic_madness.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/METAL_BATTLE.bin",
+    "target": "src/music/metal_battle.bin",
+    "target_name": "metal_battle.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MK64MENU.bin",
+    "target": "src/music/mk64menu.bin",
+    "target_name": "mk64menu.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MK64_CREDITS.bin",
+    "target": "src/music/mk64_credits.bin",
+    "target_name": "mk64_credits.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MK_REVENGE.bin",
+    "target": "src/music/mk_revenge.bin",
+    "target_name": "mk_revenge.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MM_TITLE.bin",
+    "target": "src/music/mm_title.bin",
+    "target_name": "mm_title.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MONKEY_WATCH.bin",
+    "target": "src/music/monkey_watch.bin",
+    "target_name": "monkey_watch.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MORRIGAN.bin",
+    "target": "src/music/Morrigan.bin",
+    "target_name": "Morrigan.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MRPATCH.bin",
+    "target": "src/music/mrpatch.bin",
+    "target_name": "mrpatch.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MUDA.bin",
+    "target": "src/music/muda.bin",
+    "target_name": "muda.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MULTIMAN.bin",
+    "target": "src/music/multiman.bin",
+    "target_name": "multiman.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MULTIMAN2.bin",
+    "target": "src/music/multiman2.bin",
+    "target_name": "multiman2.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MURASAKI.bin",
+    "target": "src/music/murasaki.bin",
+    "target_name": "murasaki.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MUSICAL_CASTLE.bin",
+    "target": "src/music/musical_castle.bin",
+    "target_name": "musical_castle.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/MUTE_CITY.bin",
+    "target": "src/music/mute_city.bin",
+    "target_name": "mute_city.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/N64.bin",
+    "target": "src/music/n64.bin",
+    "target_name": "n64.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/NBA_JAM.bin",
+    "target": "src/music/NBA_Jam.bin",
+    "target_name": "NBA_Jam.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/NIGHTMARE.bin",
+    "target": "src/music/Nightmare.bin",
+    "target_name": "Nightmare.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/NORFAIR.bin",
+    "target": "src/music/norfair.bin",
+    "target_name": "norfair.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/NSANITYBEACH.bin",
+    "target": "src/music/nsanitybeach.bin",
+    "target_name": "nsanitybeach.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/NSMB.bin",
+    "target": "src/music/nsmb.bin",
+    "target_name": "nsmb.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/OBSTACLE.bin",
+    "target": "src/music/obstacle.bin",
+    "target_name": "obstacle.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/OEDO_EDO.bin",
+    "target": "src/music/oedo_edo.bin",
+    "target_name": "oedo_edo.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/OLDKINGCOAL.bin",
+    "target": "src/music/OldKingCoal.bin",
+    "target_name": "OldKingCoal.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/ONETT.bin",
+    "target": "src/music/Onett.bin",
+    "target_name": "Onett.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/OPEN_YOUR_HEART.bin",
+    "target": "src/music/open_your_heart.bin",
+    "target_name": "open_your_heart.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/OPUS_13.bin",
+    "target": "src/music/opus_13.bin",
+    "target_name": "opus_13.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/ORANGSPRINT.bin",
+    "target": "src/music/orangsprint.bin",
+    "target_name": "orangsprint.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/PAPER_MARIO_BATTLE.bin",
+    "target": "src/music/paper_mario_battle.bin",
+    "target_name": "paper_mario_battle.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/PD_PAUSE.bin",
+    "target": "src/music/pd_pause.bin",
+    "target_name": "pd_pause.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/PEACH_CASTLE.bin",
+    "target": "src/music/peach_castle.bin",
+    "target_name": "peach_castle.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/PEACH_VICTORY.bin",
+    "target": "src/music/peach_victory.bin",
+    "target_name": "peach_victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/PIKA_CUP.bin",
+    "target": "src/music/Pika_Cup.bin",
+    "target_name": "Pika_Cup.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/PIRATELAND.bin",
+    "target": "src/music/pirateland.bin",
+    "target_name": "pirateland.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/PLANTATION.bin",
+    "target": "src/music/plantation.bin",
+    "target_name": "plantation.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/POKEFLOATS.bin",
+    "target": "src/music/pokefloats.bin",
+    "target_name": "pokefloats.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/POKEMON_CHAMPION.bin",
+    "target": "src/music/pokemon_champion.bin",
+    "target_name": "pokemon_champion.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/POKEMON_STADIUM.bin",
+    "target": "src/music/pokemon_stadium.bin",
+    "target_name": "pokemon_stadium.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/POLLYANNA.bin",
+    "target": "src/music/pollyanna.bin",
+    "target_name": "pollyanna.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/POP_STAR.bin",
+    "target": "src/music/Pop_Star.bin",
+    "target_name": "Pop_Star.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/PORKY.bin",
+    "target": "src/music/porky.bin",
+    "target_name": "porky.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/PORKY_MEDLEY.bin",
+    "target": "src/music/porky_medley.bin",
+    "target_name": "porky_medley.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/QUEQUE.bin",
+    "target": "src/music/queque.bin",
+    "target_name": "queque.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/QUEST64_BATTLE.bin",
+    "target": "src/music/quest64_battle.bin",
+    "target_name": "quest64_battle.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/RAIDBLUE.bin",
+    "target": "src/music/raidblue.bin",
+    "target_name": "raidblue.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/RAINBOWROAD.bin",
+    "target": "src/music/rainbowroad.bin",
+    "target_name": "rainbowroad.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/RBY_GYMLEADER.bin",
+    "target": "src/music/rby_gymleader.bin",
+    "target_name": "rby_gymleader.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/REST.bin",
+    "target": "src/music/rest.bin",
+    "target_name": "rest.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/RISKNECK.bin",
+    "target": "src/music/riskneck.bin",
+    "target_name": "riskneck.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/RITH_ESSA.bin",
+    "target": "src/music/rith_essa.bin",
+    "target_name": "rith_essa.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/ROADTOCERULEANCITY.bin",
+    "target": "src/music/roadtoceruleancity.bin",
+    "target_name": "roadtoceruleancity.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/ROCKSOLID.bin",
+    "target": "src/music/rocksolid.bin",
+    "target_name": "rocksolid.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/ROLL.bin",
+    "target": "src/music/roll.bin",
+    "target_name": "roll.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/RUNNING_FROM_EVIL.bin",
+    "target": "src/music/running_from_evil.bin",
+    "target_name": "running_from_evil.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SAMBA_DE_COMBO.bin",
+    "target": "src/music/samba_de_combo.bin",
+    "target_name": "samba_de_combo.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SARIA.bin",
+    "target": "src/music/saria.bin",
+    "target_name": "saria.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SHANTAEBOSS.bin",
+    "target": "src/music/shantaeboss.bin",
+    "target_name": "shantaeboss.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SHANTAEMEDLEY.bin",
+    "target": "src/music/shantaemedley.bin",
+    "target_name": "shantaemedley.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SHEIK_VICTORY.bin",
+    "target": "src/music/sheik_victory.bin",
+    "target_name": "sheik_victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SHERBETLAND.bin",
+    "target": "src/music/sherbetland.bin",
+    "target_name": "sherbetland.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SHEVAT.bin",
+    "target": "src/music/shevat.bin",
+    "target_name": "shevat.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SILVERSURFER.bin",
+    "target": "src/music/silversurfer.bin",
+    "target_name": "silversurfer.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SILVER_MOUNTAIN.bin",
+    "target": "src/music/Silver_Mountain.bin",
+    "target_name": "Silver_Mountain.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SKERRIES.bin",
+    "target": "src/music/skerries.bin",
+    "target_name": "skerries.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SKYWORLD.bin",
+    "target": "src/music/skyworld.bin",
+    "target_name": "skyworld.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SLIDER.bin",
+    "target": "src/music/slider.bin",
+    "target_name": "slider.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SLOPRANO.bin",
+    "target": "src/music/sloprano.bin",
+    "target_name": "sloprano.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SM64STAFF.bin",
+    "target": "src/music/sm64staff.bin",
+    "target_name": "sm64staff.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SMASHVILLE.bin",
+    "target": "src/music/smashville.bin",
+    "target_name": "smashville.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SMB2BOSS.bin",
+    "target": "src/music/smb2boss.bin",
+    "target_name": "smb2boss.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SMB2OVERWORLD.bin",
+    "target": "src/music/smb2overworld.bin",
+    "target_name": "smb2overworld.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SMB2_MEDLEY.bin",
+    "target": "src/music/smb2_medley.bin",
+    "target_name": "smb2_medley.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SMB3OVERWORLD.bin",
+    "target": "src/music/smb3overworld.bin",
+    "target_name": "smb3overworld.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SMRPG_BATTLE.bin",
+    "target": "src/music/smrpg_battle.bin",
+    "target_name": "smrpg_battle.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SMS_BOSS.bin",
+    "target": "src/music/sms_boss.bin",
+    "target_name": "sms_boss.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SMW_ATHLETIC.bin",
+    "target": "src/music/smw_athletic.bin",
+    "target_name": "smw_athletic.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SMW_TITLECREDITS.bin",
+    "target": "src/music/smw_titlecredits.bin",
+    "target_name": "smw_titlecredits.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SNAKEY_CHANTEY.bin",
+    "target": "src/music/snakey_chantey.bin",
+    "target_name": "snakey_chantey.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SNES_RAINBOW.bin",
+    "target": "src/music/snes_rainbow.bin",
+    "target_name": "snes_rainbow.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SNOWGO.bin",
+    "target": "src/music/snowgo.bin",
+    "target_name": "snowgo.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SOCCER_MENU.bin",
+    "target": "src/music/soccer_menu.bin",
+    "target_name": "soccer_menu.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SONIC2_BOSS.bin",
+    "target": "src/music/sonic2_boss.bin",
+    "target_name": "sonic2_boss.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SONIC2_SPECIAL.bin",
+    "target": "src/music/sonic2_special.bin",
+    "target_name": "sonic2_special.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SONICCD_SPECIAL.bin",
+    "target": "src/music/sonicCD_special.bin",
+    "target_name": "sonicCD_special.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SONIC_R.bin",
+    "target": "src/music/sonic_R.bin",
+    "target_name": "sonic_R.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SONIC_VICTORY.bin",
+    "target": "src/music/sonic_victory.bin",
+    "target_name": "sonic_victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SOUTHERNISLAND.bin",
+    "target": "src/music/southernisland.bin",
+    "target_name": "southernisland.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SPIRAL_MOUNTAIN.bin",
+    "target": "src/music/spiral_mountain.bin",
+    "target_name": "spiral_mountain.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SS_AQUA.bin",
+    "target": "src/music/ss_aqua.bin",
+    "target_name": "ss_aqua.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/STAGESELBM64.bin",
+    "target": "src/music/stageselbm64.bin",
+    "target_name": "stageselbm64.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/STARDUST.bin",
+    "target": "src/music/stardust.bin",
+    "target_name": "stardust.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/STARFOX_MEDLEY.bin",
+    "target": "src/music/starfox_medley.bin",
+    "target_name": "starfox_medley.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/STARRING_WARIO.bin",
+    "target": "src/music/starring_wario.bin",
+    "target_name": "starring_wario.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/STAR_WOLF.bin",
+    "target": "src/music/Star_Wolf.bin",
+    "target_name": "Star_Wolf.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/STATUS.bin",
+    "target": "src/music/status.bin",
+    "target_name": "status.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/STICKERBRUSH_SYMPHONY.bin",
+    "target": "src/music/stickerbrush_symphony.bin",
+    "target_name": "stickerbrush_symphony.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/STONECARVING_CITY.bin",
+    "target": "src/music/stonecarving_city.bin",
+    "target_name": "stonecarving_city.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/STRIKE_THE_EARTH.bin",
+    "target": "src/music/Strike_the_Earth.bin",
+    "target_name": "Strike_the_Earth.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/SURPRISE_ATTACK.bin",
+    "target": "src/music/surprise_attack.bin",
+    "target_name": "surprise_attack.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/TABUU.bin",
+    "target": "src/music/tabuu.bin",
+    "target_name": "tabuu.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/TALENTSTUDIO.bin",
+    "target": "src/music/talentstudio.bin",
+    "target_name": "talentstudio.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/TARGET_TEST.bin",
+    "target": "src/music/target_test.bin",
+    "target_name": "target_test.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/TAZMILY.bin",
+    "target": "src/music/Tazmily.bin",
+    "target_name": "Tazmily.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/THEATER.bin",
+    "target": "src/music/theater.bin",
+    "target_name": "theater.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/THE_ALOOF_SOLDIER.bin",
+    "target": "src/music/the_aloof_soldier.bin",
+    "target_name": "the_aloof_soldier.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/THE_DAYS_WHEN_MY_MOTHER_WAS_THERE.bin",
+    "target": "src/music/the_days_when_my_mother_was_there.bin",
+    "target_name": "the_days_when_my_mother_was_there.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/TITANIA.bin",
+    "target": "src/music/Titania.bin",
+    "target_name": "Titania.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/TOWEROFHEAVEN.bin",
+    "target": "src/music/towerofheaven.bin",
+    "target_name": "towerofheaven.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/TREASURE_TROVE_COVE.bin",
+    "target": "src/music/treasure_trove_cove.bin",
+    "target_name": "treasure_trove_cove.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/TROPICALISLAND.bin",
+    "target": "src/music/tropicalisland.bin",
+    "target_name": "tropicalisland.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/TROUBLE_MAKER.bin",
+    "target": "src/music/Trouble_Maker.bin",
+    "target_name": "Trouble_Maker.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/TWILIGHT_CITY.bin",
+    "target": "src/music/twilight_city.bin",
+    "target_name": "twilight_city.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/UNDERGROUND.bin",
+    "target": "src/music/underground.bin",
+    "target_name": "underground.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/UNDERGROUND_HURRY.bin",
+    "target": "src/music/underground_hurry.bin",
+    "target_name": "underground_hurry.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/UNFOUNDED_REVENGE.bin",
+    "target": "src/music/unfounded_revenge.bin",
+    "target_name": "unfounded_revenge.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/VAMPIREKILLER.bin",
+    "target": "src/music/VampireKiller.bin",
+    "target_name": "VampireKiller.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/VENOM.bin",
+    "target": "src/music/venom.bin",
+    "target_name": "venom.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/VSRIDLEY.bin",
+    "target": "src/music/vsridley.bin",
+    "target_name": "vsridley.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/VS_DSAMUS.bin",
+    "target": "src/music/vs_dsamus.bin",
+    "target_name": "vs_dsamus.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/VS_KLUNGO.bin",
+    "target": "src/music/vs_klungo.bin",
+    "target_name": "vs_klungo.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/VS_MARX.bin",
+    "target": "src/music/vs_marx.bin",
+    "target_name": "vs_marx.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/WALUIGI_PINBALL.bin",
+    "target": "src/music/Waluigi_Pinball.bin",
+    "target_name": "Waluigi_Pinball.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/WARIOWARE.bin",
+    "target": "src/music/warioware.bin",
+    "target_name": "warioware.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/WATCH_THEME.bin",
+    "target": "src/music/watch_theme.bin",
+    "target_name": "watch_theme.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/WENDYS_HOUSE.bin",
+    "target": "src/music/Wendys_House.bin",
+    "target_name": "Wendys_House.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/WILDLANDS.bin",
+    "target": "src/music/wildlands.bin",
+    "target_name": "wildlands.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/WILY_FIELD.bin",
+    "target": "src/music/wily_field.bin",
+    "target_name": "wily_field.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/WINDY.bin",
+    "target": "src/music/windy.bin",
+    "target_name": "windy.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/WING_CAP.bin",
+    "target": "src/music/wing_cap.bin",
+    "target_name": "wing_cap.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/WITHMILASDIVINEPROTECTION.bin",
+    "target": "src/music/withmilasdivineprotection.bin",
+    "target_name": "withmilasdivineprotection.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/WIZPIG.bin",
+    "target": "src/music/wizpig.bin",
+    "target_name": "wizpig.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/WL2_PERFECT.bin",
+    "target": "src/music/wl2_perfect.bin",
+    "target_name": "wl2_perfect.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/WOLF_VICTORY.bin",
+    "target": "src/music/wolf_victory.bin",
+    "target_name": "wolf_victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/WORLD_OF_ENVY.bin",
+    "target": "src/music/World_of_Envy.bin",
+    "target_name": "World_of_Envy.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/YOSHI_GOLF.bin",
+    "target": "src/music/yoshi_golf.bin",
+    "target_name": "yoshi_golf.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/YOSHI_TALE.bin",
+    "target": "src/music/yoshi_tale.bin",
+    "target_name": "yoshi_tale.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/YOUNGLINK_VICTORY.bin",
+    "target": "src/music/YoungLink_Victory.bin",
+    "target_name": "YoungLink_Victory.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/music/ZEBES_LANDING.bin",
+    "target": "src/music/Zebes_Landing.bin",
+    "target_name": "Zebes_Landing.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/req/DSAMUS_MODEL.req",
+    "target": "src/Req/DSAMUS_MODEL.REQ",
+    "target_name": "DSAMUS_MODEL.REQ",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/req/JLINK_MODEL.req",
+    "target": "src/Req/JLINK_MODEL.REQ",
+    "target_name": "JLINK_MODEL.REQ",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/sounds/BONUS_CHARACTER.aifc",
+    "target": "src/sounds/Bonus_Character.aifc",
+    "target_name": "Bonus_Character.aifc",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/sounds/MASTERHAND.aifc",
+    "target": "src/sounds/MasterHand.aifc",
+    "target_name": "MasterHand.aifc",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/sounds/all_star.aifc",
+    "target": "src/sounds/All_Star.aifc",
+    "target_name": "All_Star.aifc",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/sounds/homerun_contest.aifc",
+    "target": "src/sounds/Homerun_Contest.aifc",
+    "target_name": "Homerun_Contest.aifc",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/sounds/twelve_character_battle.aifc",
+    "target": "src/sounds/Twelve_Character_Battle.aifc",
+    "target_name": "Twelve_Character_Battle.aifc",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/stages/yoshi_island_ii.bin",
+    "target": "src/stages/yoshi_island_II.bin",
+    "target_name": "yoshi_island_II.bin",
+    "type": "file",
+    "depth": 3
+  },
+  {
+    "alias": "src/Banjo/moveset/VICTORY2.bin",
+    "target": "src/Banjo/Moveset/VICTORY2.BIN",
+    "target_name": "VICTORY2.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Banjo/moveset/VICTORY3.bin",
+    "target": "src/Banjo/Moveset/VICTORY3.BIN",
+    "target_name": "VICTORY3.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Conker/moveset/BTHROWDATA.bin",
+    "target": "src/Conker/Moveset/BTHROWDATA.BIN",
+    "target_name": "BTHROWDATA.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Conker/moveset/CLAP.bin",
+    "target": "src/Conker/Moveset/CLAP.BIN",
+    "target_name": "CLAP.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Conker/moveset/TEETERING.bin",
+    "target": "src/Conker/Moveset/TEETERING.BIN",
+    "target_name": "TEETERING.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Conker/moveset/WALK1.bin",
+    "target": "src/Conker/Moveset/WALK1.BIN",
+    "target_name": "WALK1.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/DSamus/moveset/CHARGE.bin",
+    "target": "src/DSamus/Moveset/CHARGE.BIN",
+    "target_name": "CHARGE.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Dedede/moveset/DSP_BEGIN.bin",
+    "target": "src/Dedede/Moveset/DSP_BEGIN.BIN",
+    "target_name": "DSP_BEGIN.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Dedede/moveset/DSP_CHARGE.bin",
+    "target": "src/Dedede/Moveset/DSP_CHARGE.BIN",
+    "target_name": "DSP_CHARGE.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/EPuff/sounds/REST_SNORE_fgm_microcode.bin",
+    "target": "src/EPuff/Sounds/REST_SNORE_FGM_MICROCODE.bin",
+    "target_name": "REST_SNORE_FGM_MICROCODE.bin",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/EPuff/sounds/REST_SNORE_sfx_microcode.bin",
+    "target": "src/EPuff/Sounds/REST_SNORE_SFX_MICROCODE.bin",
+    "target_name": "REST_SNORE_SFX_MICROCODE.bin",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/EPuff/sounds/REST_fgm_microcode.bin",
+    "target": "src/EPuff/Sounds/REST_FGM_MICROCODE.bin",
+    "target_name": "REST_FGM_MICROCODE.bin",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/EPuff/sounds/REST_sfx_microcode.bin",
+    "target": "src/EPuff/Sounds/REST_SFX_MICROCODE.bin",
+    "target_name": "REST_SFX_MICROCODE.bin",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/EPuff/sounds/SLEEP_fgm_microcode.bin",
+    "target": "src/EPuff/Sounds/SLEEP_FGM_MICROCODE.bin",
+    "target_name": "SLEEP_FGM_MICROCODE.bin",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Ebi/moveset/BTHROWDATA.bin",
+    "target": "src/Ebi/Moveset/BTHROWDATA.BIN",
+    "target_name": "BTHROWDATA.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Falco/moveset/BTHROW.bin",
+    "target": "src/Falco/Moveset/BTHROW.BIN",
+    "target_name": "BTHROW.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Falco/moveset/BTHROWDATA.bin",
+    "target": "src/Falco/Moveset/BTHROWDATA.BIN",
+    "target_name": "BTHROWDATA.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Falco/moveset/TEETERING.bin",
+    "target": "src/Falco/Moveset/TEETERING.BIN",
+    "target_name": "TEETERING.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Ganondorf/moveset/DASH_ATTACK.bin",
+    "target": "src/Ganondorf/Moveset/DASH_ATTACK.BIN",
+    "target_name": "DASH_ATTACK.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Ganondorf/moveset/EDGEATTACKF.bin",
+    "target": "src/Ganondorf/Moveset/edgeattackf.bin",
+    "target_name": "edgeattackf.bin",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Ganondorf/moveset/EDGEATTACKS.bin",
+    "target": "src/Ganondorf/Moveset/EDGEATTACKS.BIN",
+    "target_name": "EDGEATTACKS.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Ganondorf/moveset/FORWARD_TILT.bin",
+    "target": "src/Ganondorf/Moveset/FORWARD_TILT.BIN",
+    "target_name": "FORWARD_TILT.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Ganondorf/moveset/FORWARD_TILT_HIGH.bin",
+    "target": "src/Ganondorf/Moveset/FORWARD_TILT_HIGH.BIN",
+    "target_name": "FORWARD_TILT_HIGH.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Ganondorf/moveset/FORWARD_TILT_LOW.bin",
+    "target": "src/Ganondorf/Moveset/FORWARD_TILT_LOW.BIN",
+    "target_name": "FORWARD_TILT_LOW.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Ganondorf/moveset/FORWARD_TILT_MID_HIGH.bin",
+    "target": "src/Ganondorf/Moveset/FORWARD_TILT_MID_HIGH.BIN",
+    "target_name": "FORWARD_TILT_MID_HIGH.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Ganondorf/moveset/FORWARD_TILT_MID_LOW.bin",
+    "target": "src/Ganondorf/Moveset/FORWARD_TILT_MID_LOW.BIN",
+    "target_name": "FORWARD_TILT_MID_LOW.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Ganondorf/moveset/JAB_1.bin",
+    "target": "src/Ganondorf/Moveset/JAB_1.BIN",
+    "target_name": "JAB_1.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/JLink/moveset/BAIR.bin",
+    "target": "src/JLink/Moveset/BAIR.BIN",
+    "target_name": "BAIR.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/JLink/moveset/DAIR.bin",
+    "target": "src/JLink/Moveset/DAIR.BIN",
+    "target_name": "DAIR.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/JLink/moveset/FAIR.bin",
+    "target": "src/JLink/Moveset/FAIR.BIN",
+    "target_name": "FAIR.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/JLink/moveset/NAIR.bin",
+    "target": "src/JLink/Moveset/NAIR.BIN",
+    "target_name": "NAIR.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Kirby/moveset/MTWO_NSPA_BEGIN.bin",
+    "target": "src/Kirby/Moveset/MTWO_NSPA_BEGIN.BIN",
+    "target_name": "MTWO_NSPA_BEGIN.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Kirby/moveset/MTWO_NSPA_CHARGE.bin",
+    "target": "src/Kirby/Moveset/MTWO_NSPA_CHARGE.BIN",
+    "target_name": "MTWO_NSPA_CHARGE.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Kirby/moveset/MTWO_NSPA_SHOOT.bin",
+    "target": "src/Kirby/Moveset/MTWO_NSPA_SHOOT.BIN",
+    "target_name": "MTWO_NSPA_SHOOT.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Kirby/moveset/MTWO_NSPG_BEGIN.bin",
+    "target": "src/Kirby/Moveset/MTWO_NSPG_BEGIN.BIN",
+    "target_name": "MTWO_NSPG_BEGIN.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Kirby/moveset/MTWO_NSPG_CHARGE.bin",
+    "target": "src/Kirby/Moveset/MTWO_NSPG_CHARGE.BIN",
+    "target_name": "MTWO_NSPG_CHARGE.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Kirby/moveset/MTWO_NSPG_SHOOT.bin",
+    "target": "src/Kirby/Moveset/MTWO_NSPG_SHOOT.BIN",
+    "target_name": "MTWO_NSPG_SHOOT.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Kirby/moveset/PEPPY_NSP_BEGIN.bin",
+    "target": "src/Kirby/Moveset/PEPPY_NSP_BEGIN.BIN",
+    "target_name": "PEPPY_NSP_BEGIN.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Kirby/moveset/PEPPY_NSP_SHOOT.bin",
+    "target": "src/Kirby/Moveset/PEPPY_NSP_SHOOT.BIN",
+    "target_name": "PEPPY_NSP_SHOOT.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Kirby/moveset/SHEIK_NSP_BEGIN.bin",
+    "target": "src/Kirby/Moveset/SHEIK_NSP_BEGIN.BIN",
+    "target_name": "SHEIK_NSP_BEGIN.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Kirby/moveset/SHEIK_NSP_CHARGE.bin",
+    "target": "src/Kirby/Moveset/SHEIK_NSP_CHARGE.BIN",
+    "target_name": "SHEIK_NSP_CHARGE.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Kirby/moveset/SHEIK_NSP_SHOOT.bin",
+    "target": "src/Kirby/Moveset/SHEIK_NSP_SHOOT.BIN",
+    "target_name": "SHEIK_NSP_SHOOT.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/ATTACK2LUCAS.aifc",
+    "target": "src/Lucas/sounds/attack2LUCAS.aifc",
+    "target_name": "attack2LUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/ATTACK3LUCAS.aifc",
+    "target": "src/Lucas/sounds/attack3LUCAS.aifc",
+    "target_name": "attack3LUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/ATTACKLUCAS.aifc",
+    "target": "src/Lucas/sounds/attackLucas.aifc",
+    "target_name": "attackLucas.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/CROWDCHANTLUCAS.aifc",
+    "target": "src/Lucas/sounds/crowdchantLUCAS.aifc",
+    "target_name": "crowdchantLUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/DIZZYLUCAS.aifc",
+    "target": "src/Lucas/sounds/dizzyLUCAS.aifc",
+    "target_name": "dizzyLUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/DOWNSMASHLUCAS.aifc",
+    "target": "src/Lucas/sounds/downsmashLUCAS.aifc",
+    "target_name": "downsmashLUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/HURTLUCAS.aifc",
+    "target": "src/Lucas/sounds/hurtLUCAS.aifc",
+    "target_name": "hurtLUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/JUMPLUCAS.aifc",
+    "target": "src/Lucas/sounds/jumpLUCAS.aifc",
+    "target_name": "jumpLUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/KOLUCAS.aifc",
+    "target": "src/Lucas/sounds/koLUCAS.aifc",
+    "target_name": "koLUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/LIFTLUCAS.aifc",
+    "target": "src/Lucas/sounds/liftLUCAS.aifc",
+    "target_name": "liftLUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/PKFIRELUCAS.aifc",
+    "target": "src/Lucas/sounds/pkfireLUCAS.aifc",
+    "target_name": "pkfireLUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/PKTHUNDER2LUCAS.aifc",
+    "target": "src/Lucas/sounds/pkthunder2LUCAS.aifc",
+    "target_name": "pkthunder2LUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/PKTHUNDERLUCAS.aifc",
+    "target": "src/Lucas/sounds/pkthunderLUCAS.aifc",
+    "target_name": "pkthunderLUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/SLEEPLUCAS.aifc",
+    "target": "src/Lucas/sounds/sleepLUCAS.aifc",
+    "target_name": "sleepLUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/STARKOLUCAS.aifc",
+    "target": "src/Lucas/sounds/starkoLUCAS.aifc",
+    "target_name": "starkoLUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/TAUNTLUCAS.aifc",
+    "target": "src/Lucas/sounds/tauntLUCAS.aifc",
+    "target_name": "tauntLUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/TEETERLUCAS.aifc",
+    "target": "src/Lucas/sounds/teeterLUCAS.aifc",
+    "target_name": "teeterLUCAS.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Lucas/sounds/UPSMASHLUCAS.aifc",
+    "target": "src/Lucas/sounds/upsmashLucas.aifc",
+    "target_name": "upsmashLucas.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Marth/moveset/THROW_B_DATA.bin",
+    "target": "src/Marth/Moveset/THROW_B_DATA.BIN",
+    "target_name": "THROW_B_DATA.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Mewtwo/moveset/NSPA_BEGIN.bin",
+    "target": "src/Mewtwo/Moveset/NSPA_BEGIN.BIN",
+    "target_name": "NSPA_BEGIN.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Mewtwo/moveset/NSPA_CHARGE.bin",
+    "target": "src/Mewtwo/Moveset/NSPA_CHARGE.BIN",
+    "target_name": "NSPA_CHARGE.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Mewtwo/moveset/NSPA_SHOOT.bin",
+    "target": "src/Mewtwo/Moveset/NSPA_SHOOT.BIN",
+    "target_name": "NSPA_SHOOT.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Mewtwo/moveset/NSPG_BEGIN.bin",
+    "target": "src/Mewtwo/Moveset/NSPG_BEGIN.BIN",
+    "target_name": "NSPG_BEGIN.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Mewtwo/moveset/NSPG_CHARGE.bin",
+    "target": "src/Mewtwo/Moveset/NSPG_CHARGE.BIN",
+    "target_name": "NSPG_CHARGE.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Mewtwo/moveset/NSPG_SHOOT.bin",
+    "target": "src/Mewtwo/Moveset/NSPG_SHOOT.BIN",
+    "target_name": "NSPG_SHOOT.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Peach/moveset/JAB1.bin",
+    "target": "src/Peach/Moveset/JAB1.BIN",
+    "target_name": "JAB1.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Peppy/moveset/BTHROW.bin",
+    "target": "src/Peppy/Moveset/BTHROW.BIN",
+    "target_name": "BTHROW.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Peppy/moveset/BTHROWDATA.bin",
+    "target": "src/Peppy/Moveset/BTHROWDATA.BIN",
+    "target_name": "BTHROWDATA.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Peppy/moveset/NSP_BEGIN.bin",
+    "target": "src/Peppy/Moveset/NSP_BEGIN.BIN",
+    "target_name": "NSP_BEGIN.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Peppy/moveset/NSP_SHOOT.bin",
+    "target": "src/Peppy/Moveset/NSP_SHOOT.BIN",
+    "target_name": "NSP_SHOOT.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Peppy/moveset/TEETERING.bin",
+    "target": "src/Peppy/Moveset/TEETERING.BIN",
+    "target_name": "TEETERING.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Roy/moveset/THROW_B_DATA.bin",
+    "target": "src/Roy/Moveset/THROW_B_DATA.BIN",
+    "target_name": "THROW_B_DATA.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Sheik/moveset/NSP_BEGIN.bin",
+    "target": "src/Sheik/Moveset/NSP_BEGIN.BIN",
+    "target_name": "NSP_BEGIN.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Sheik/moveset/NSP_CHARGE.bin",
+    "target": "src/Sheik/Moveset/NSP_CHARGE.BIN",
+    "target_name": "NSP_CHARGE.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/Sheik/moveset/NSP_SHOOT.bin",
+    "target": "src/Sheik/Moveset/NSP_SHOOT.BIN",
+    "target_name": "NSP_SHOOT.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/YoungLink/moveset/EDGEATTACKF.bin",
+    "target": "src/YoungLink/Moveset/EDGEATTACKF.BIN",
+    "target_name": "EDGEATTACKF.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/YoungLink/moveset/EDGEATTACKS.bin",
+    "target": "src/YoungLink/Moveset/EDGEATTACKS.BIN",
+    "target_name": "EDGEATTACKS.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/YoungLink/moveset/FORWARD_TILT.bin",
+    "target": "src/YoungLink/Moveset/FORWARD_TILT.BIN",
+    "target_name": "FORWARD_TILT.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/YoungLink/moveset/JAB_1.bin",
+    "target": "src/YoungLink/Moveset/JAB_1.BIN",
+    "target_name": "JAB_1.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/YoungLink/moveset/JAB_2.bin",
+    "target": "src/YoungLink/Moveset/JAB_2.BIN",
+    "target_name": "JAB_2.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/YoungLink/moveset/JAB_3.bin",
+    "target": "src/YoungLink/Moveset/JAB_3.BIN",
+    "target_name": "JAB_3.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/YoungLink/moveset/UP_TILT.bin",
+    "target": "src/YoungLink/Moveset/UP_TILT.BIN",
+    "target_name": "UP_TILT.BIN",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/YoungLink/sounds/YLSLEEP.aifc",
+    "target": "src/YoungLink/sounds/ylsleep.aifc",
+    "target_name": "ylsleep.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/YoungLink/sounds/YLTAUNTDRINK.aifc",
+    "target": "src/YoungLink/sounds/yltauntdrink.aifc",
+    "target_name": "yltauntdrink.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/music/instruments/pizzicato_ffxi-3.aifc",
+    "target": "src/music/instruments/Pizzicato_ffxi-3.aifc",
+    "target_name": "Pizzicato_ffxi-3.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/sounds/misc/DonkeyD.aifc",
+    "target": "src/sounds/misc/donkeyD.aifc",
+    "target_name": "donkeyD.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/sounds/misc/DonkeyK.aifc",
+    "target": "src/sounds/misc/donkeyK.aifc",
+    "target_name": "donkeyK.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/sounds/stadium/BATTLE_POSES.aifc",
+    "target": "src/sounds/stadium/battle_poses.aifc",
+    "target_name": "battle_poses.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/sounds/stadium/CLANG.aifc",
+    "target": "src/sounds/stadium/clang.aifc",
+    "target_name": "clang.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/sounds/stadium/FACE_EACH_OTHER.aifc",
+    "target": "src/sounds/stadium/face_each_other.aifc",
+    "target_name": "face_each_other.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/sounds/stadium/FIGHTING_POSES.aifc",
+    "target": "src/sounds/stadium/fighting_poses.aifc",
+    "target_name": "fighting_poses.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/sounds/stadium/RECOVERY.aifc",
+    "target": "src/sounds/stadium/recovery.aifc",
+    "target_name": "recovery.aifc",
+    "type": "file",
+    "depth": 4
+  },
+  {
+    "alias": "src/sounds/stadium/THERE_GOES.aifc",
+    "target": "src/sounds/stadium/There_goes.aifc",
+    "target_name": "There_goes.aifc",
+    "type": "file",
+    "depth": 4
+  }
+]

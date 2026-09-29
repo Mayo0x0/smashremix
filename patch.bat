@@ -1,4 +1,11 @@
-assembler\bass.exe -o "ssb64asm.z64" main.asm -sym logfile.log
-assembler\chksum64.exe "ssb64asm.z64" > nul
-assembler\rn64crc.exe -u > nul
+@echo off
+python build_current_parent.py
+if errorlevel 1 (
+  echo.
+  echo CURRENT PARENT BUILD FAILED
+  pause
+  exit /b 1
+)
+echo.
+echo Current parent build complete: ssb64asm.z64
 @echo %cmdcmdline%|find /i """%~f0""">nul && pause
